@@ -1,0 +1,520 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Enhance Your Images - ImageGen</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Use Artificial Intelligence to upscale your low-resolution photos or restore your old ones!">
+    <meta name="keywords" content="image enhancer, image upscaler, restore photos ai, ai image quality booster">
+    <meta name="author" content="ImageGen">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="ImageGen">
+    <meta property="og:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+    <meta property="og:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+    <meta property="og:url" content="{{HOST}}">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ImageGen">
+    <meta name="twitter:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+    <meta name="twitter:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+
+    <meta name="theme-color" content="#161313">
+    <link rel="canonical" href="{{HOST}}">
+    <meta name="language" content="English">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+
+    <link rel="icon" href="{{HOST}}/static/img/logo/icon.svg" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{HOST}}/static/img/logo/icon.svg">
+
+
+  <link rel="stylesheet" href="/static/all-icons/myicon.css">
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/css/plugins.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/enhance.css">
+</head>
+
+<style>
+    #dlbutton:hover {
+        background-color: transparent !important
+    }
+
+    /* ADDED: "Show Demo" button + modal viewer for the demo screenshot (static/demo/enhance.png). */
+    .demo-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 14px 0 4px 0;
+        transition: background 0.2s, border-color 0.2s;
+    }
+
+    .demo-btn:hover {
+        background: rgba(255, 255, 255, 0.16);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .demo-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 3000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .demo-modal-overlay.open {
+        display: flex;
+    }
+
+    .demo-modal-content {
+        position: relative;
+        max-width: 90vw;
+        max-height: 90vh;
+        background: #1a1a1a;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .demo-modal-content img {
+        display: block;
+        max-width: 100%;
+        max-height: 80vh;
+        border-radius: 8px;
+        margin: 0 auto;
+    }
+
+    .demo-modal-close {
+        position: absolute;
+        top: -14px;
+        right: -14px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #fff;
+        color: #111;
+        border: none;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+</style>
+
+{% include "en/sidebar_header.html" %}
+  <section class="home-section" id="dropArea">
+    <div id="root">
+        <main>
+            <section class="banner v2 pb-50 pb-lg-70 pb-xl-100 pb-xxl-120" style="margin-top: 10px">
+                <div class="container">
+                    <div class="main-banner-content">
+                        <div style="margin-top: 0%; display: block !important;" class="section-title-center">
+                            <h2 class="text-5 text-bold">Enhance</h2>
+
+                            <!-- ADDED: opens a modal showing the demo screenshot. -->
+                            <button type="button" class="demo-btn" id="showDemoBtn">&#9654; Show Demo</button>
+
+                            <p class="text-para-1 mt-20">Upscale and sharpen your old/blurry images up to 4x of its original resolution. Filesize limit is 10Mbs.</p>
+                        </div>
+
+                        <!-- ADDED: modal viewer for the demo screenshot, opened by the "Show Demo" button above. -->
+                        <div class="demo-modal-overlay" id="demoModalOverlay">
+                            <div class="demo-modal-content">
+                                <button type="button" class="demo-modal-close" id="demoModalClose" aria-label="Close">&times;</button>
+                                <img src="/static/demo/enhance.png" alt="Example of an image enhanced and upscaled with Enhance">
+                            </div>
+                        </div>
+
+                        <script>
+                            (function () {
+                                var btn = document.getElementById('showDemoBtn');
+                                var overlay = document.getElementById('demoModalOverlay');
+                                var closeBtn = document.getElementById('demoModalClose');
+
+                                function openDemo() {
+                                    overlay.classList.add('open');
+                                    document.body.style.overflow = 'hidden';
+                                }
+
+                                function closeDemo() {
+                                    overlay.classList.remove('open');
+                                    document.body.style.overflow = '';
+                                }
+
+                                if (btn && overlay && closeBtn) {
+                                    btn.addEventListener('click', openDemo);
+                                    closeBtn.addEventListener('click', closeDemo);
+                                    overlay.addEventListener('click', function (e) {
+                                        if (e.target === overlay) closeDemo();
+                                    });
+                                    document.addEventListener('keydown', function (e) {
+                                        if (e.key === 'Escape' && overlay.classList.contains('open')) closeDemo();
+                                    });
+                                }
+                            })();
+                        </script>
+
+                        <div id="rowww" class="row mt-60">
+                            <div class="col-lg-6">
+                                <div style="border-radius: 30px" id="image-selection-box" onclick="document.getElementById('imageInput').click()">
+                                    <span id="image-selection-text">Drag 'n' drop or click here to select an image</span>
+                                    <input type="file" id="imageInput" accept=".jpg,.jpeg,.png,.webp,.bmp">
+                                </div>
+                                <button id="letrehozas2" style="display: inline" name="letrehozas2" class="btn-anime v4 text-capital round-border-full" type="button">
+                                    Enhance
+                                </button>
+                            </div>
+
+                            <div id="generatedimgdiv" class="col-lg-6" style="display: flex;">
+                                <div class="card-img-text" style="height: 400px; width: 100%; border: none;">
+                                    <p style="margin-top: 5%; font-size: 16px; color: white">Upscale Resolution: <span id="upscaled_resolution_value">2</span>x</p>
+                                    <p style="font-size: 10px; color: rgb(226, 226, 226)">New resolution: <span id="upscaled_resolution_new">Select an image first</span></p>
+                                    <input id="scale" type="range" class="form-range scale" value="2" min="2" max="4" id="customRange2">
+                                    <p style="margin-top: 5%; font-size: 16px; color: white" class="text-para-1">Quality Boost: <span id="quality_value">80</span>%</p>
+                                    <input id="quality" type="range" class="form-range scale" value="80" min="0" max="100" id="customRange2">
+                                    <p style="margin-top: 5%; font-size: 18px;" class="text-para-1 text-bold">Status: <span id="statuspercent">0</span>%</p>
+                                    <div id="currentlygenerating" style="display: none">
+                                        <div class="wrapper">
+                                            <div class="padding-mask">
+                                            <div class="slide"></div>
+                                            </div>
+                                        </div>
+                                        <p id="waitinglabel" style="margin-top: 5%; font-size: 11px;" class="text-para-1">Enhancing may take up a minute when the servers are overloaded. Please don't close this window, otherwise you may be charged on successful enhancement even after you left the page. Do</p>
+                                    </div>
+                                    <a id="dlbutton" href="" style="display: none; margin-top: 2%; background-color: #00e3ff; border: 1px solid #4fcbdc" class="btn-anime v4 text-capital round-border-full" download>
+                                        Download
+                                    </a>
+                                    <p id="successlabel" style="margin-top: 5%; font-size: 14px; display: none;" class="text-para-1 text-bold">Success! Scroll below to see results!</p>
+
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% include "en/app_footer.html" %}
+        </main>
+        <script src="/static/js/jquery-3.7.1.min.js"></script>
+        <script>
+            var scaleValue = 1
+            const allowedTypes = ['image/jpeg', 'image/png', "image/bmp", "image/webp"];
+            var kreditek = {{ credits }}
+              const imageHolder = document.getElementById('generated-image-homepage');
+
+              ["dragenter", "dragover", "dragleave", "drop"].forEach(event => {
+      dropArea.addEventListener(event, e => {
+          e.preventDefault();
+          e.stopPropagation();
+      });
+  });
+
+  function handleFile(file) {
+      imageBox.style.backgroundImage = ``;
+      if (file) {
+          const reader = new FileReader();
+          const img = new Image();
+
+          img.onload = function() {
+              imageBox.style.backgroundImage = `url(${img.src})`;
+              imageBox.style.backgroundSize = 'cover';
+              imageBox.style.backgroundPosition = 'center';
+              imageText.style.display = 'none';
+          };
+
+          reader.onload = function(e) {
+              img.src = e.target.result;
+          };
+
+          reader.readAsDataURL(file);
+      }
+  }
+
+  // Drag-and-drop event listener
+  dropArea.addEventListener("drop", e => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+
+      if (file) {
+          // Update file input's FileList for consistency
+          const dataTransfer = new DataTransfer();
+          if (file.size > 10 * 1024 * 1024) {
+                    alert('File exceeds the maximum allowed size of 10 MB.');
+                    alert("Image exceeds the maximum allowed size of 10 MB");
+                    return;
+
+                }
+          if (!allowedTypes.includes(file.type)) {
+                        console.log("Invalid file type! Enhance only supports jpg (jpeg), png, bmp, svg and webp!");
+                        alert("Invalid image type! Enhance only supports jpg (jpeg), png, bmp, svg and webp!");
+                        return;
+          }
+          dataTransfer.items.add(file);
+          imageInput.files = dataTransfer.files;
+
+          handleFile(file);
+      }
+  });
+
+            $(document).ready(function() {
+                let originalWidth = 0;
+                let originalHeight = 0;
+
+                window.originalWidth = 0;
+                window.originalHeight = 0;
+
+                let ajaxCompleted = false;
+
+                $('#scale').on('input', function() {
+                    scaleValue = $(this).val();
+                    $('#upscaled_resolution_value').text(scaleValue);
+                    $('#upscaled_resolution_new').text((window.originalWidth * Number(scaleValue)) + "x" + (window.originalHeight * Number(scaleValue)));
+                });
+
+                $('#quality').on('input', function() {
+                    let qualityValue = $(this).val();
+                    $('#quality_value').text(qualityValue);
+                });
+            });
+            const imageBox = document.getElementById('image-selection-box');
+            const imageInput = document.getElementById('imageInput');
+            const imageText = document.getElementById('image-selection-text');
+            let selectedImageUrl = '';
+            let selectedImageWidth = 0;
+            let selectedImageHeight = 0;
+
+            imageInput.addEventListener('change', (event) => {
+                imageBox.style.backgroundImage = ``;
+                window.originalWidth = 0;
+                window.originalHeight = 0;
+                $('#upscaled_resolution_new').text("Select an image first.");
+                const file = event.target.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+                    const img = new Image();
+
+                    img.onload = function() {
+                        selectedImageWidth = img.width;
+                        selectedImageHeight = img.height;
+
+                        window.originalWidth = selectedImageWidth;
+                        window.originalHeight = selectedImageHeight;
+
+                        $('#upscaled_resolution_new').text((originalWidth * scaleValue) + "x" + (originalHeight * scaleValue));
+
+                        imageBox.style.backgroundImage = `url(${selectedImageUrl})`;
+                        imageBox.style.backgroundSize = 'cover';
+                        imageBox.style.backgroundPosition = 'center';
+                        imageText.style.display = 'none';
+                    };
+
+                    reader.onload = function(e) {
+                        selectedImageUrl = e.target.result;
+                        img.src = selectedImageUrl;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            $('#letrehozas2').click(function() {
+                document.querySelectorAll("#enhimg, #enhancedimglabel, #compareimgslabel, #enhimg2").forEach(element => {
+                    element.remove();
+                });
+
+            const file = imageInput.files[0];
+
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File exceeds the maximum allowed size of 10 MB.');
+                    animation.stop();
+                    return;
+
+                }
+
+                console.log(file.type)
+                console.log(allowedTypes.includes(file.type))
+                if (!allowedTypes.includes(file.type)) {
+                        console.log("Invalid file type! Enhance only supports jpg (jpeg), png, bmp, svg and webp!");
+                        animation.stop();
+                        return;
+                    }
+
+                $("#successlabel").hide();
+                let statusElem = $('#statuspercent');
+                let ajaxCompleted = false;
+                let animation;
+
+
+                $('#letrehozas2').prop('disabled', true);
+                $('#currentlygenerating').show();
+                statusElem.text("0");
+
+                $('#dlbutton').css('display', 'none')
+
+                function animateTo(targetPercent, duration) {
+                    return $({ percent: statusElem.text() }).animate(
+                        { percent: targetPercent },
+                        {
+                            duration: duration,
+                            easing: "linear",
+                            step: function(now) {
+                                statusElem.text(Math.floor(now));
+                            }
+                        }
+                    );
+                }
+                    const formData = new FormData();
+
+
+                    formData.append('image', file);
+                    formData.append('quality', $("#quality_value").val());
+                    formData.append("scale", $("#scale").val());
+
+                    if (allowedTypes.includes(file.type)) {
+                    animation = animateTo(96, 17000);
+                    }
+
+                    $.ajax({
+                        url: '/enhance-images-post',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {"X-CSRF-Token": "{{ session.get('csrf_token') }}"},
+                        success: function(response) {
+
+                            if (response.error) {
+                                alert(response.error);
+                                animation.stop();
+                                return;
+                            }
+
+                            if (response.hasOwnProperty('nocredit')) {
+                                animation.stop();
+                                window.location.href = '/upgrade';
+                                return;
+                            }
+
+                            if (!response.hasOwnProperty('enhanced_image_url')) {
+                                alert("An error occurred on the server side: " + response.error);
+                                animation.stop();
+                                return;
+                            }
+                            ajaxCompleted = true;
+                            animation.stop();
+                            animateTo(100, 1000).promise().done(function() {
+                                $('#currentlygenerating').hide();
+                                $('#letrehozas2').prop('disabled', false);
+                            });
+
+                            kreditek = kreditek - 2
+                            $('.credit_count').text(kreditek);
+                            updateProgress(kreditek)
+
+
+                            const enhancedImageUrl = response.enhanced_image_url;
+                            const sliderHTML =
+                                `<div id="enhimg" class="container" style="position: relative; width: ${selectedImageWidth}px; height: auto; max-width: 100%">
+                                    <div id="comparison" style="position: relative; width: 100%; height: 100%;">
+                                        <figure style="background-image: url(${selectedImageUrl}); width: 100%; height: 100%;">
+                                            <div id="handle"></div>
+                                            <div id="divisor" style="background-image: url(${enhancedImageUrl}); width: 50%; height: 100%;"></div>
+                                        </figure>
+                                        <input type="range" style="padding: 0" min="0" max="100" value="50" id="slider">
+                                    </div>
+                                </div>`;
+
+                            $('#dlbutton').css('display', 'block').attr('href', enhancedImageUrl);
+
+                            if ($('#rowww img').length > 0) {
+                                $('#rowww img').attr('src', enhancedImageUrl);
+                            } else {
+                                $('#rowww').append('<p id="enhancedimglabel" style="font-size: 14px;line-height: 1.3; margin-top: 40px; margin-bottom: 20px; text-align: center; color: #d1d1d1"><b>Enhanced image: (Click on it to see the original!)</b></p>');
+                                var imgElement = $('<img>').attr('src', enhancedImageUrl).attr("id", "enhimg2").css('cursor', 'pointer');
+
+                                imgElement.on('click', function() {
+                                    if ($(this).attr('src') === enhancedImageUrl) {
+                                        $(this).attr('src', selectedImageUrl);
+                                    } else {
+                                        $(this).attr('src', enhancedImageUrl);
+                                    }
+                                });
+
+                                $('#rowww').append(imgElement);
+
+                            }
+
+                            if ($('#rowww #comparison').length > 0) {
+                                $('#rowww #comparison').replaceWith(sliderHTML);
+                            } else {
+                                $("#rowww").append('<p id="compareimgslabel" style="font-size: 14px;line-height: 1.3; margin-top: 4%; margin-bottom: 20px; text-align: center; color: #d1d1d1"><b>Compare images: (May not work well on certain images or browsers)</b></p>');
+                                $('#rowww').append(sliderHTML);
+                            }
+
+                            moveDivisor();
+
+                            $('#slider').on('input', function() {
+                                moveDivisor();
+                            });
+
+                            $("#successlabel").show();
+                        },
+                        error: function(error, jqXHR) {
+                            if (jqXHR.status === 500) {
+                                alert("Memory error")
+                                return
+                            }
+                            alert("Error: " + error.responseJSON.error);
+                            animation.stop();
+                            statusElem.text("0");
+                            $('#currentlygenerating').hide();
+                            $('#letrehozas2').prop('disabled', false);
+                            $("#successlabel").hide();
+                        },
+                        complete: function() {
+                            $('#currentlygenerating').hide();
+                            $('#letrehozas2').prop('disabled', false);
+                        }
+                    });
+                } else {
+                    alert("Please select an image first.");
+                    $('#currentlygenerating').hide();
+                    $('#letrehozas2').prop('disabled', false);
+                    $("#successlabel").hide();
+                }
+            });
+
+            function moveDivisor() {
+                var handle = document.getElementById("handle");
+                var divisor = document.getElementById("divisor");
+                var slider = document.getElementById("slider");
+
+                if (handle && divisor && slider) {
+                    handle.style.left = slider.value + "%";
+                    divisor.style.width = slider.value + "%";
+                } else {
+                    console.error('Divisor, handle, or slider elements not found');
+                }
+            }
+        </script>
+    </div>
+  </section>
+      </section>

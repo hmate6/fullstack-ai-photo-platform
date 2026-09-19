@@ -1,0 +1,66 @@
+<style>
+    /* Blur + darken everything by default */
+body.locked > *:not(.unlock-allowed):not(#content-lock-overlay) {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Dark overlay */
+#content-lock-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2); /* 20% darken */
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Center box */
+.lock-box {
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 420px;
+}
+
+.lock-box h2 {
+  margin-bottom: 1.5rem;
+}
+
+.lock-box button {
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+</style>
+
+<div id="content-lock-overlay">
+  <div class="lock-box">
+    <h2>Content Locked, Please Log in To See</h2>
+    <button onclick="window.location.href='/'">Log In</button>
+  </div>
+</div>
+
+<script>
+  const allowedClasses = [
+    'unlock-allowed',
+    'sidebar'
+  ];
+
+  // Apply allowed class to matching elements
+  allowedClasses.forEach(cls => {
+    document.querySelectorAll('.' + cls).forEach(el => {
+      el.classList.add('unlock-allowed');
+    });
+  });
+
+  // Activate lock
+  document.body.classList.add('locked');
+</script>

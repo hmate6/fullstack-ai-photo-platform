@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Generate 3D Models - ImageGen</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Use AI to generate 3D models for your videogame, animation, or to print in 3D!">
+    <meta name="keywords" content="3d model generation, 3d model generator, videogame asset generator ai, 3d printing object creator">
+    <meta name="author" content="ImageGen">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="ImageGen">
+    <meta property="og:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+    <meta property="og:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+    <meta property="og:url" content="{{HOST}}">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ImageGen">
+    <meta name="twitter:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+    <meta name="twitter:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+
+    <meta name="theme-color" content="#161313">
+    <link rel="canonical" href="{{HOST}}">
+    <meta name="language" content="English">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+
+    <link rel="icon" href="{{HOST}}/static/img/logo/icon.svg" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{HOST}}/static/img/logo/icon.svg">
+
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="apple-touch-icon" href="/static/img/logo/favicon.svg">
+    <script src="/static/js/jquery-3.7.1.min.js"></script>
+    <link rel="icon" href="/static/img/logo/icon.svg">
+    <link rel="stylesheet" href="/static/all-icons/myicon.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/fiokstyle.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <style>
+        #styles:hover, #toggleButton2:hover {
+            background: transparent !important
+        }
+
+        #generatedimgdiv {
+            display: block !important
+        }
+
+        @media (max-width: 992px) {
+            #generatedimgdiv {
+                margin-top: 14% !important
+            }
+
+            #mobileshowcredits {
+                display: block !important
+            }
+        }
+
+        @media (max-width: 650px) {
+            #generatedimgdiv {
+                margin-top: 25% !important
+            }
+        }
+
+        @media (max-width: 770px) {
+            p {
+                font-size: 14px !important;
+            }
+        }
+
+        @media (max-width: 467px) {
+            p {
+                font-size: 12px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <main>
+            {% include "en/sidebar_header.html" %}
+            <section class="banner v2 pb-50 pb-lg-70 pb-xxl-120 home-section" style="margin-top: 20px">
+                <div class="container">
+                    <div class="main-banner-content">
+
+                        <div style="margin-top: 0%; display: block" class="section-title-center">
+                            <h2 class="text-6 text-bold">Text To 3D Object</h2>
+                            <p class="text-para-1 mt-20">Type in something you would like to see, and we will make a 3d object out of it, which you can use in your videogame, animation, etc... Do <b>not</b> close this window while the generation is in process, because the result will automatically be deleted. Each 3D object will use 20 tool uses. It usually takes about 20 seconds to generate one.</p>
+                        </div>
+
+                        <div class="row mt-60 pb-50">
+                            <div class="col-lg-6">
+
+                                <textarea spellcheck="false" maxlength="{{maxlength}}" id="bemeneti_szoveg" class="nonselectable"
+                                    style="margin-top: 0%; max-height: 60%; width: 100%; min-height: 60%; height: 60%"
+                                    placeholder="{{example_prompt}}"></textarea>
+
+                                    <div id="toolkit" style="color: white; width: 100%; text-align: left" class="nonselectable">
+                                        <button style="display: inline; font-size: 15px; padding: 10px; text-align: left; background: #453d86 !important; border: none; margin-top: 10px" onclick="load3DShowcase()" class="btn-anime v4 text-capital round-border-full">3D showcase</button>
+                                    <button style="display: inline; font-size: 15px; padding: 10px; text-align: left; background: #453d86 !important; border: none; margin-top: 10px" onclick="randomPrompt()" class="btn-anime v4 text-capital round-border-full">Random prompt</button></div>
+                                    <button id="letrehozas2" name="letrehozas2" class="btn-anime v4 text-capital round-border-full" type="button">
+                                        Generate
+                                    </button>
+
+
+                                    <div id="generation_div" style="display: flex; margin-top: 5%; margin-bottom: 5%; align-items: center;">
+
+                                        <div style="display: flex; flex-direction: column; align-items: center; margin-left: auto;">
+                                            <button id="letrehozas" name="letrehozas" class="btn-anime v4 text-capital round-border-full" style="border-radius: 20px;" type="button">
+                                                Generate
+                                            </button>
+                                        </div>
+                                    </div>
+                            </div>
+
+                            <div id="generatedimgdiv" class="col-lg-6">
+                                <div class="card-img-text" style="height: 400px; width: 100%;">
+                                    <div id="generated-image-homepage" class="banner-card-img" style="background-color: rgb(41, 39, 37); height: 100%; width: 100%;">
+                                        <div class="nonselectable" style="height: 100%; color: rgb(189, 189, 189); display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                        height: 100%; /* Full viewport height for vertical centering */">Your generated 3D object will appear here.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                {% include "en/app_footer.html" %}
+            </section>
+        </main>
+    </div>
+
+    <div class="modal fade" id="customUpgradeModal" tabindex="-1" aria-labelledby="modalLabel" style="background-color: rgb(2,2,2,0.7)" aria-hidden="false">
+        <div class="modal-dialog modal-dialog-centered" style="margin-top: -20vh">
+          <div class="modal-content bg-dark text-white">
+            <div class="modal-header" style="border-bottom: none">
+              <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body text-center" id="modalUpgradeText">
+            </div>
+            <div class="modal-footer" style="border-bottom: none; border-top: none">
+                <a href="/upgrade" style="background-color: rgb(255, 170, 42); border: 1px solid rgb(255, 170, 42);" class="btn btn-primary">Upgrade Plan</a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<script src="/static/js/sidebar.js"></script>
+
+<script>
+
+    function load3DShowcase() {
+        $.ajax({
+        url: "/load3dshowcase",
+        type: "GET",
+        success: function (response) {
+
+            $('#bemeneti_szoveg').val(response.prompt);
+
+            const modelHtml = `
+                <div class="card-img-text" style="position: relative; height: 400px; width: 100%;">
+                    <div id="generated-image-homepage" class="banner-card-img" style="background-color: rgb(41, 39, 37); height: 100%; width: 100%;">
+                        <model-viewer src="/static/showcase-3d/${response.location}.glb"
+                                      style="width: 100%; height: 100%;"
+                                      shadow-intensity="1"
+                                      camera-controls
+                                      touch-action="pan-y"
+                                      orientation="0deg 0deg 180deg">
+                        </model-viewer>
+                    </div>
+                </div>
+            `;
+
+            // Update the div
+            $('#generatedimgdiv').html(modelHtml);
+    }});
+    }
+
+    function randomPrompt() {
+    $.ajax({
+        url: "/random3dprompt",
+        type: "GET",
+        success: function (response) {
+            if (response.startsWith("<!DOCTYPE html>")) {
+                alert('An error occured while generating a random prompt.');
+            } else {
+                $("#bemeneti_szoveg").val(response)
+            }
+        },
+        error: function (error) {
+            alert('An error occured while generating a random prompt.');
+        }
+    });
+}
+
+    function showUpgradeModal(text) {
+        document.getElementById('modalUpgradeText').innerText = text;
+
+        var myModal = new bootstrap.Modal(document.getElementById('customUpgradeModal'));
+        myModal.show();
+    }
+
+    const textarea = document.getElementById('bemeneti_szoveg');
+
+    if (window.innerWidth < 992) {
+textarea.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+})};
+
+    var kreditek = {{credits}}
+
+    document.addEventListener('DOMContentLoaded', function() {
+            var textarea = document.getElementById('bemeneti_szoveg');
+            var maxCharacters = {{maxlength}};
+
+        });
+
+
+    $('#letrehozas, #letrehozas2').click(function() {
+
+        var inputValue = $('#bemeneti_szoveg').val();
+        if (inputValue.length > {{maxlength}}) {
+           alert("Text is more than {{maxlength}} character!")
+           return
+           }
+
+        $("#letrehozas, #letrehozas2").attr('disabled', true);
+        const imageHolder = document.getElementById('generated-image-homepage');
+if (imageHolder) {
+    imageHolder.innerHTML = `<div class="dot-windmill-container">
+<div class="snippet" data-title="dot-windmill">
+  <div class="stage">
+    <div class="dot-windmill"></div>
+  </div>
+</div>
+</div>`
+}
+        const timeout = setTimeout(function() {
+            alert('Timeout Error');
+            newDiv.remove();
+            imageHolder.innerHTML = "";
+        }, 60000);
+
+        $.ajax({
+            type: 'POST',
+            url: '/button_click3d',
+            contentType: 'application/json',
+            headers: {"X-CSRF-Token": "{{ session.get('csrf_token') }}"},
+            data: JSON.stringify({inputValue: inputValue}),
+            success: function(response) {
+                clearTimeout(timeout);
+                if (response.message === 'Done') {
+
+                    kreditek = kreditek - 5
+                    updateProgress(kreditek)
+
+                    const newDiv = $(`
+                        <div class="card-img-text" style="position: relative; height: 400px; width: 100%;">
+                            <div id="generated-image-homepage" class="banner-card-img" style="background-color: rgb(41, 39, 37); height: 100%; width: 100%;">
+                                <!-- Anchor Tag for Download (Positioned Above Model Viewer) -->
+                                <a alt="Download" href="${response.filepath}"
+                                style="color: white; position: absolute; right: 4%; bottom: 2%; z-index: 10;" download>
+                                <i class="fa-solid fa-file-arrow-down fa-4x"></i>
+                                </a>
+
+                                <!-- Model Viewer Element -->
+                                <model-viewer src="${response.filepath}"
+                                            style="width: 100%; height: 100%;"
+                                            shadow-intensity="1"
+                                            camera-controls
+                                            touch-action="pan-y">
+                                </model-viewer>
+                            </div>
+                        </div>
+                            `);
+        $('#generatedimgdiv').html(newDiv);
+        if ($("#letrehozas, #letrehozas2").is(':disabled')) {
+            $("#letrehozas, #letrehozas2").removeAttr('disabled'); }
+
+
+                } else {
+                    if (response.nsfw) {
+                        alert("Our system detected NSFW contents. We couldn't generate your 3D object.")
+                        imageHolder.innerHTML = "";
+                    }
+
+                    else if (response.nocredit) {
+                        window.location.href = "/upgrade"
+                        imageHolder.innerHTML = "";
+                    }
+
+                    else if (response.error) {
+                        alert(response.error);
+                        imageHolder.innerHTML = "";
+                    }
+
+                    else {
+                        alert('Unexpected error');
+                        imageHolder.innerHTML = "";
+                    }
+
+                    if ($("#letrehozas, #letrehozas2").is(':disabled')) {
+                        $("#letrehozas, #letrehozas2").removeAttr('disabled'); }
+                }
+            },
+            error: function(response) {
+                clearTimeout(timeout);
+
+                imageHolder.innerHTML = "";
+                alert("Unexpected error. Please report it to us through the contact page.")
+
+                if ($("#letrehozas, #letrehozas2").is(':disabled')) {
+                $("#letrehozas, #letrehozas2").removeAttr('disabled'); }
+                imageHolder.innerHTML = "";
+            }
+        });
+    });
+
+
+</script>
+
+</body>
+
+</html>

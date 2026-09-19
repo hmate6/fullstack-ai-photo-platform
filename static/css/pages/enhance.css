@@ -1,0 +1,365 @@
+/* Styling for image selection box */
+#image-selection-box {
+    background-color: rgb(41, 39, 37);
+    height: 250px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    text-align: center;
+    color: white;
+    border: 2px dashed #ccc;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+#image-selection-box input[type="file"] {
+    display: none;
+}
+
+#image-selection-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+/* Initially hide the slider until AJAX success */
+.before-after-slider {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 991.20px) {
+    #generatedimgdiv {
+        margin-top: 10%;
+    }
+}
+
+@media (min-width: 991.20px) and (max-width: 1200px) {
+    .text-para-1 {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 700px) {
+    .text-para-1 {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .text-para-1 {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 300px) {
+    .text-para-1 {
+        font-size: 9px;
+    }
+}
+
+.image-comparison {
+    max-width: 100%;
+    margin: auto;
+    position: relative;
+}
+
+.image-comparison__slider-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.image-comparison__range {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    cursor: ew-resize;
+}
+
+.image-comparison__image-wrapper {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.image-comparison__image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.image-comparison__slider {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background-color: white; 
+}
+
+.image-comparison__thumb {
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 20px);
+    width: 40px;
+    height: 40px;
+    background-color: #0091df;
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+.container {
+max-width: 800px;
+}
+#comparison {
+width: 100%;
+padding-bottom: 100%;
+overflow: hidden; 
+position: relative;
+}
+
+figure { 
+position: absolute;
+background-size: cover;
+font-size: 0;
+width: 100%;
+height: 100%;
+margin: 0; 
+}
+
+#divisor {
+background-size: cover;
+position: absolute;
+width: 50%; 
+box-shadow: 0 5px 10px -2px rgba(0,0,0,0.3);
+bottom: 0; height: 100%;
+
+&::before,
+&::after {
+content: '';
+position: absolute;
+right: -2px;
+width: 4px;
+height: calc(50% - 25px);
+background: white;
+z-index: 3;
+}
+&::before {
+top: 0;
+box-shadow: 0 -3px 8px 1px rgba(0,0,0,.3);
+}
+&::after {
+bottom: 0;
+box-shadow: 0 3px 8px 1px rgba(0,0,0,.3);
+}
+}
+#handle {
+position: absolute;
+height: 50px;
+width: 50px;
+top: 50%;
+left: 50%;
+transform: translateY(-50%) translateX(-50%);
+z-index: 1;
+
+&::before,
+&::after {
+content: '';
+width: 0;
+height: 0;
+border: 6px inset transparent;
+position: absolute;
+top: 50%;
+margin-top: -6px;
+}
+&::before {
+border-right: 6px solid white;
+left: 50%;
+margin-left: -17px;
+}
+&::after {
+border-left: 6px solid white;
+right: 50%;
+margin-right: -17px;
+}
+}
+
+input[type=range]:not(.scale){
+-webkit-appearance:none;
+-moz-appearance:none;
+position: absolute;
+top: 50%; left: -25px;
+transform: translateY(-50%);
+background-color: transparent;
+width: calc(100% + 50px); 
+z-index: 2;
+
+&:focus,
+&:active {
+border: none;
+outline: none;
+}
+}
+input[type=range]:not(.scale)::-webkit-slider-thumb {
+-webkit-appearance: none;
+border: none;
+height: 50px;
+width: 50px;
+border-radius: 50%;
+background: transparent;
+border: 4px solid white;
+box-shadow: 0 0 8px 1px rgba(0,0,0,.3);
+}
+input[type=range]:not(.scale)::-moz-range-track {
+-moz-appearance:none;
+height:15px;
+width: 100%;
+background-color: transparent; 
+position: relative;
+outline: none;    
+}
+
+
+
+
+/* Customize the slider track and thumb */
+input[type=range].scale {
+-webkit-appearance: none; /* Remove default styling */
+background: transparent; /* Make the background transparent */
+position: relative; /* Position relative for child elements */
+}
+
+input[type=range].scale::-webkit-slider-runnable-track {
+height: 8px; /* Track height */
+background: rgb(72, 80, 81); /* Track color */
+border-radius: 5px; /* Rounded corners */
+}
+
+input[type=range].scale::-moz-range-track {
+height: 8px; /* Track height */
+background: rgb(72, 80, 81); /* Track color */
+}
+
+input[type=range].scale::-webkit-slider-thumb {
+-webkit-appearance: none; /* Remove default styling */
+height: 19px; /* Thumb height */
+width: 19px; /* Thumb width */
+background: rgb(157, 0, 255); /* Thumb color */
+border-radius: 60%; /* Make it round */
+cursor: pointer; /* Pointer cursor on hover */
+margin-top: -6px; /* Center the thumb on the track */
+}
+
+input[type=range].scale::-moz-range-thumb {
+height: 25px; /* Thumb height */
+width: 25px; /* Thumb width */
+background: rgb(157, 0, 255); /* Thumb color */
+border-radius: 50%; /* Make it round */
+cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Optional: Focus state for accessibility */
+input[type=range].scale:focus {
+outline: none; /* Remove outline on focus */
+}
+
+.scale {
+width: 60%;
+}
+
+
+/* Extend container width for larger screens */
+@media (min-width: 992px) {
+    .container {
+        max-width: 1200px; /* Allow more room */
+    }
+
+    .col-lg-6 {
+        flex: 1 1 50%; /* Ensure they stay side-by-side */
+        max-width: 50%; /* Set maximum width to keep columns in a row */
+    }
+
+    /* Increase heights for larger screens */
+    #image-selection-box {
+        height: 350px;
+        font-size: 18px;
+    }
+
+    #generatedimgdiv .card-img-text {
+        height: 500px;
+    }
+}
+
+.wrapper {
+position: relative;
+width: 200px;
+height: 25px;
+background-color: rgb(255 255 255 / 0.2);
+border-radius: 99999px;
+border: 2px solid rgb(255 255 255 / 0.1);
+box-sizing: content-box;
+margin: 0 auto; /* Center the wrapper */
+top: 4%
+}
+
+
+.padding-mask {
+container-type: inline-size;
+position: absolute;
+inset: 0;
+margin: 5px;
+border-radius: 99999px;
+overflow: hidden;
+}
+
+.slide {
+position: absolute;
+inset: 0;
+margin: 0 auto;
+width: 50cqw;
+border-radius: 99999px;
+background-color: rgb(0, 193, 227);
+animation: 1s infinite alternate cha-cha ease-in-out;
+}
+
+@keyframes cha-cha {
+from {
+translate: -60cqw;
+}
+
+to {
+translate: 60cqw;
+}
+}
+
+/* Ensure generated image div does not add extra scroll */
+#generatedimgdiv,
+.card-img-text {
+overflow: hidden; /* Prevent extra scrollbars */
+max-height: 100%; /* Adjust as needed to fit layout */
+}
+
+/* Enhance the image comparison slider responsiveness */
+.image-comparison {
+width: 100%;
+max-width: 100%;
+margin: auto;
+}
+
+/*.wrapper {
+position: absolute;
+bottom: 10px;  Adjust the bottom spacing as needed 
+left: 50%;
+transform: translateX(-50%);  Center horizontally 
+width: 200px;
+height: 25px;
+background-color: rgb(255 255 255 / 0.2);
+border-radius: 99999px;
+border: 2px solid rgb(255 255 255 / 0.1);
+box-sizing: content-box;*/

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Settings</title>
+    <link rel="apple-touch-icon" href="/static/img/logo/favicon.svg">
+    <link rel="icon" href="/static/img/logo/icon.svg">
+    <link rel="stylesheet" href="/static/all-icons/myicon.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+
+<style>
+    .start-ai-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.start-ai-form input[type="email"] {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+}
+
+.start-ai-form button {
+    /*width: 100%;*/
+    max-width: 300px;
+}
+
+.nonselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.hidden {display: none}
+
+.upgrade_plan_btn:hover {
+  animation: color-change 4s linear infinite;
+}
+.upgrade_plan_btn {
+  animation: color-change-border 5s linear infinite;
+}
+
+.unsubtrigger:hover {
+  background-color: rgb(255, 85, 85) !important;
+}
+.unsubtrigger {
+  border-color: red !important;
+}
+@keyframes color-change-border {
+  0%,100%{
+    border-color:#ff1493;
+  }
+
+  25%{
+    border-color:#8b4513;
+  }
+
+  50%{
+    border-color:#0091EA;
+  }
+
+  75%{
+    border-color:#9400d3;
+  }
+}
+@keyframes color-change {
+  0%,100%{
+    border-color:#ff1493;
+    background-color: #ff1414;;
+  }
+
+  25%{
+    border-color:#8b4513;
+    background-color:#93eb04;
+  }
+
+  50%{
+    border-color:#0091EA;
+    background-color:#1e9dff;
+  }
+
+  75%{
+    border-color:#9400d3;
+    background-color:#cd07ff;
+  }
+}
+</style>
+<body>
+    <div id="root">
+        <main>
+            {% include "en/sidebar_header.html" %}
+            <section class="banner v1 pb-50 pb-lg-70 pb-xxl-120 home-section" style="min-height: 0">
+                <div class="container" style="margin-top: 3%">
+                    <div class="section-title" style="text-align: center;">
+                        <h2 class="text-2 text-capital text-bold mt-20 nonselectable" style="font-size: 40px; margin-top: 0%;">Settings</h2>
+                    </div>
+
+                    <form class="start-ai-form mt-40" method="post" id="belepesi_urlap" style="margin-top: 2%; text-align: center">
+                        <input type="hidden" name="csrf_token" value="{{ session.get('csrf_token') }}">
+                        <span style="color: white; margin-top: 0%">Email: {{ emailregex }}</span>
+                        {% if status %}
+                        <span style="margin-top: 0%; color: white">Account Status: Verified</span>
+                        {% else %}
+                        <span style="margin-top: 3%; color: white">Account Status: Unverified</span>
+                        <button id="resend_verification" name="resend_verification" class="btn-anime v1 text-capital round-border-full" style="margin-top: 0%;text-align: center; font-size: 14px;" type="submit">Resend e-mail verification</button>
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                            <span style="margin-top: 1%; color: white"><b>{{messages[0]}}</b></span>
+                            {% endif %}
+                          {% endwith %}
+                        {% endif %}
+
+                        {% if end_date %}<span style="margin-top: 0%; color: white">Subscription status: {{sub_status}}</span>{% endif %}
+                        {% if end_date %}<span style="margin-top: 0%; color: white">Subscription next billing period (end date if canceled): {{end_date}}</span>{% endif %}
+
+                        {# <a id="genNewPassword" class="btn-anime v1 text-capital round-border-full" style="margin-top: 10px; background-color: rgb(63, 186, 186); border: 2px solid rgb(51, 152, 152); text-align: center">Modify password</a> #}
+                        {# <a href="/redeem-code" class="btn-anime v1 text-capital round-border-full" style="margin-top: 10px; background-color: rgb(233, 190, 98); border: 2px solid rgb(214, 192, 145); text-align: center">Redeem</a> #}
+                        {# <button name="newpw" type="submit" class="btn-anime v1 text-capital round-border-full" style="margin-top: 5%; background-color: rgb(63, 186, 186); border: 2px solid rgb(28, 228, 228); text-align: center">Modify password</button> #}
+                        {# <button onclick="showDelModal()" class="btn-anime v1 text-capital round-border-full" style="margin-top: 40px; background-color: rgb(255, 78, 78); border: 2px solid rgb(255, 170, 118); text-align: center; font-size: 14px" type="button">Delete Account</button> #}
+
+                    </form>
+                    {# <div class="start-ai-form" style="margin-top: 15vh"><a href="/logout-from-every-place?csrf-token={{session.get('csrf_token')}}" class="btn-anime v1 text-capital round-border-full" style="margin-top: 10px" type="button">Log me out from every place<i class="my-icon icon-arrow-right"></i></a></div> #}
+                    <div class="start-ai-form" style="margin-top: 5vh"><a href="/logout?csrf-token={{session.get('csrf_token')}}" class="btn-anime v1 text-capital round-border-full" type="button">Log me out from this device<i class="my-icon icon-arrow-right"></i></a></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+<script>
+        function showDelModal() {
+    var myModal = new bootstrap.Modal(document.getElementById('customDelModal'));
+    myModal.show();
+}
+
+      </script>
+
+  <div class="modal fade" id="customDelModal" tabindex="-1" aria-labelledby="modalLabel" style="background-color: rgb(2,2,2,0.7)">
+    <div class="modal-dialog modal-dialog-centered" style="margin-top: -20vh">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header" style="border-bottom: none">
+          <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+        </div>
+        <div class="modal-body text-center" id="modalText">
+          Are you sure you want to delete your account? With deletion your data, and your generated images we store will be erased forever, and after 30 days, they can't be recovered. This is the last, and only warning. <br>To delete your account, click on the delete button, this is the only confirmation message.
+        </div>
+        <div class="modal-footer" style="border-bottom: none; border-top: none">
+          <button style="background-color: rgb(55, 178, 255); border: 1px solid rgb(58, 252, 255); margin-right: auto" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+          <form method="post" action="/del_account">
+            <input class="hidden" type="text" name="csrf_token" value="{{session.get('csrf_token')}}">
+          <button id="deleteButton" name="deleteButton" type="submit" style="background-color: rgb(255, 0, 0); border: 1px solid rgb(255, 108, 108);" class="btn btn-primary">Delete</button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script src="/static/js/bootstrap.min.js"></script>
+</body>

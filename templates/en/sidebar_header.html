@@ -1,0 +1,387 @@
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LHPT256LJH"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-LHPT256LJH');
+</script>
+{# <div style="background-color: grey; z-index: 100; width: 100%; height: 100%; position: fixed;"></div> #}
+
+{% if not logged_in %}
+<style>
+  .get-started-button {
+background-color: #007bff;        /* Primary blue color */
+  color: #fff;                      /* White text */
+  border: none;                     /* No border */
+  padding: 10px 20px;               /* Padding for size */
+  font-size: 16px;                  /* Font size */
+  font-weight: 500;                 /* Slightly bold */
+  border-radius: 5px;               /* Rounded corners */
+  cursor: pointer;                  /* Pointer on hover */
+  transition: background-color 0.3s, transform 0.2s;  /* Smooth hover effect */
+  }
+
+  .get-started-button:hover {
+    background-color: #0056b3;        /* Darker blue on hover */
+    transform: scale(1.05);           /* Slightly enlarge on hover */
+}
+
+/* Focus state */
+.get-started-button:focus {
+    outline: none;                    /* Remove default outline */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);  /* Custom focus ring */
+}
+
+/* Active state */
+.get-started-button:active {
+    background-color: #004080;        /* Even darker blue when clicked */
+    transform: scale(0.98);           /* Slightly shrink on click */
+}
+
+@media (max-width: 992px) {
+  .get-started-button {
+    display: none;
+  }
+
+  #pc_view_credits {
+    display: none
+  }
+
+  #emailverifydiv, .verifydiv {
+    margin-top: 4%
+  }
+}
+</style>
+
+<div id="pc_view_credits" style="width: 100%; height: auto; padding-top: 10px; padding-right: 10px; color: white; display: flex; justify-content: right; align-items: center; position: fixed; padding-top: 10px; background-color: #161313; z-index: 40; top: 0; padding-bottom: 7px"">
+  <div style="left: 100px; top: 17px; position: fixed; display: block; z-index: -1" class="logo_name" id="logo_sidebar_closed">
+    <a href="/">
+      <img src="/static/img/logo/ImageGen.svg" alt="Logo">
+    </a>
+  </div>
+
+  <span onclick="window.location.href = '/login'" style="cursor: pointer; margin-right: 2vh">Login</span>
+  <span onclick="window.location.href = '/signup'" class="get-started-button" style="cursor: pointer; font-size: 14px">Create Free Account</span>
+</div>
+
+{% else %}
+<style>
+
+    .progress-bar {
+      background: #c5c5c5;
+      border-radius: 5px;
+      box-shadow: inset 0 0 0 1px #c5c5c5;
+      height: 10px;
+      overflow: hidden;
+      position: relative;
+      width: 200px;
+    }
+
+    .progress-bar--inner {
+      background-color: #9f32ff;
+      border-radius: 5px;
+      height: 100%;
+      transition: width 0.5s ease-in-out;
+    }
+
+    .progress-bar--wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
+      margin: 10px 20px;
+    }
+
+    .progress-bar--counter {
+      margin-top: 5px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 370;
+
+    }
+
+
+
+  @media (max-width: 991px) {
+
+  #emailverifydiv {
+    margin-top: 4%
+  }
+
+  #pc_view_credits {
+    display: none !important
+  }
+
+}
+
+@media (max-width: 800px) {
+
+#emailverifydiv {
+  margin-top: 4%
+}
+
+}
+
+@media (max-width: 600px) {
+
+#emailverifydiv {
+  margin-top: 5%
+}
+
+}
+
+@media (max-width: 400px) {
+
+#emailverifydiv {
+  margin-top: 6%
+}
+
+}
+
+@media (max-width: 200px) {
+
+#emailverifydiv {
+  margin-top: 7%
+}
+
+}
+</style>
+<div id="pc_view_credits" style="width: 100%; height: auto; padding-top: 10px; padding-right: 10px; color: white; display: flex; justify-content: right; align-items: center; position: fixed; padding-top: 10px; background-color: #161313; z-index: 40; top: 0; padding-bottom: 3px">
+  <div style="left: 100px; top: 17px; position: fixed; display: block; z-index: -1" class="logo_name" id="logo_sidebar_closed">
+    <a href="/">
+      <img src="/static/img/logo/ImageGen.svg" alt="Logo">
+    </a>
+  </div>
+  <div class="progress-bar--wrap">
+    <div class="progress-bar">
+      <div class="progress-bar--inner" id="progress-fill" style="width: {{(credits/uses) * 100}}%;"></div>
+    </div>
+    <span class="progress-bar--counter" id="progress-text">{{credits}}/{{uses}} Credits left (0%)</span>
+  </div>
+
+  <div class="profile" style="cursor: pointer; display: flex; align-items: center; gap: 12px; justify-content: flex-end; text-align: end;" onclick="toggleDropdown(event)">
+    <div class="img-box" style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden;">
+      <img src="{% if profile_picture == None %}/static/img/userimg.webp{% else %}{{profile_picture}}{% endif %}" alt="User Image" style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+  </div>
+  <div id="profile-dropdown" style="display: none; position: absolute; right: 10px; top: 60px; background-color: #333; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0,0,0,0.3); z-index: 40; width: 10%; text-align: left">
+    <ul style="list-style-type: none; margin: 0; padding: 0; color: white;">
+      <li style="padding: 20px; cursor: pointer;" onclick="window.location.href = '/contact'">Contact Us</li>
+      <li style="padding: 20px; cursor: pointer;" onclick="window.location.href = '/settings'">Settings</li>
+      <li style="padding: 20px; cursor: pointer;" onclick="window.location.href = '/logout?csrf-token={{ session.get('csrf_token') }}'">Logout</li>
+    </ul>
+  </div>
+</div>
+
+<br><br><br>
+
+<style>
+#profile-dropdown {
+  position: absolute;
+  right: 10px;
+  top: 60px;
+  background-color: #333;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.3);
+  display: none; /* Hidden by default */
+}
+
+#profile-dropdown ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+#profile-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+#profile-dropdown li:hover {
+  background-color: #444;
+}
+</style>
+
+<script>
+
+function updateProgress(currentUsage, totalUsage = {{uses}}) {
+      //currentUsage = {{uses}} - currentUsage;
+      const progressFill = document.getElementById('progress-fill');
+      const progressText = document.getElementById('progress-text');
+      const ccount = document.getElementById('ccount');
+
+      ccount.textContent = `${currentUsage}/${totalUsage}`
+
+      const percent = Math.round((currentUsage / totalUsage) * 100);
+
+      progressFill.style.width = percent + '%';
+      progressText.textContent = `${currentUsage}/${totalUsage} Credits left (${percent}%)`;
+    }
+
+
+  function toggleDropdown(event) {
+    const dropdown = document.getElementById('profile-dropdown');
+    event.stopPropagation();
+    dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
+  }
+
+  // Close dropdown if click is outside
+  document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('profile-dropdown');
+    const profileButton = document.querySelector('.profile');
+    if (!dropdown.contains(event.target) && !profileButton.contains(event.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
+
+  function navigateToSection(section) {
+    alert('Navigating to: ' + section);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    updateProgress({{credits}});
+});
+
+</script>
+
+{% endif %}
+
+
+    <link rel="stylesheet" href="/static/css/sidebar.css">
+    <div class="sidebar">
+      <div class="logo-details">
+        <div class="logo_name" ystyle="pointer-events: all;" onclick="window.location.href = '/'">
+            <a href="/">
+              <img src="/static/img/logo/ImageGen.svg" alt="Logo">
+            </a>
+        </div>
+
+        <i class='bx bx-menu' id="btn"></i>
+      </div>
+      <ul class="nav-list">
+        <li>
+          <a href="/generate">
+              <i class="fa-regular fa-image imagegen"></i>
+            <span class="links_name imagegen">Generate</span>
+          </a>
+          <span class="tooltip">Generate</span>
+        </li>
+        <li>
+          <a href="/enhance">
+              <i class="fa-solid fa-wand-magic-sparkles enhance"></i>
+            <span class="links_name enhance">Enhance Photos</span>
+          </a>
+          <span class="tooltip">Enhance</span>
+        </li>
+        <li>
+          <a href="/frame-extractor">
+            <i class="fa-solid fa-photo-film frame_extractor"></i>
+            <span class="links_name frame_extractor">Extract Frames</span>
+          </a>
+          <span class="tooltip">Frame Extractor</span>
+        </li>
+        <li>
+        <li>
+            <a href="/explore">
+              <i class="fa-solid fa-heart explore"></i>
+              <span class="links_name explore">Explore</span>
+            </a>
+            <span class="tooltip">Explore</span>
+          </li>
+        <li>
+
+          <li>
+            <a href="/random">
+              <i class="fa-solid fa-shuffle enhance"></i>
+              <span class="links_name enhance">Random Image</span>
+            </a>
+            <span class="tooltip">Random Image</span>
+          </li>
+
+
+
+
+        <li>
+          <a href="/contact">
+            <i class="fa-solid fa-envelope upgrade_plan"></i>
+            <span class="links_name upgrade_plan">Contact Us</span>
+          </a>
+          <span class="tooltip">Contact Us</span>
+        </li>
+
+        <li>
+          <a href="/image-to-text" class="tti">
+              <i class="fa-solid fa-book-open tti"></i>
+            <span class="links_name tti">Scan Images OCR</span>
+          </a>
+          <span class="tooltip">Image To Text</span>
+        </li>
+        <li>
+          <a href="/3d-generate">
+              <i class="fa-solid fa-cube gen3d"></i>
+            <span class="links_name gen3d">Generate 3D Objects</span>
+          </a>
+          <span class="tooltip">3D</span>
+        </li>
+
+
+
+        <link rel="preconnect" href="/https://fonts.googleapis.com">
+<link rel="preconnect" href="/https://fonts.gstatic.com" crossorigin>
+<link href="/https://fonts.googleapis.com/css2?family=Anton+SC&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+
+
+        <li class="profile">
+          <div class="profile-details">
+            <div class="name_job">
+              {% if logged_in %}
+              <div class="name">Credits left: <span id="ccount" class="credit_count progress-text">{{credits}}/{{uses}}</span></div>
+            </div>
+          </div>
+          <a href="/settings"><i class="fa-solid fa-gear settings" id="settings"></i></a>
+
+              {% else %}
+
+
+          <a href="/signup"  class="name" style="font-size: 20px; font-weight: 700; background-color: transparent;">Sign Up</a>
+            </div>
+          </div>
+          <a href="/signup"><i class="fa-solid fa-right-to-bracket settings" id="settings"></i></a>
+
+
+              {% endif %}
+
+        </li>
+      </ul>
+    </div>
+
+
+    <script>
+      let sidebar = document.querySelector(".sidebar");
+      let closeBtn = document.querySelector("#btn");
+      let navList = document.querySelector(".nav-list");
+
+      closeBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+        navList.classList.toggle("scroll");
+        menuBtnChange();
+      });
+
+
+      function menuBtnChange() {
+        if (sidebar.classList.contains("open")) {
+          closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+        } else {
+          closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+        }
+      }</script>
+
+

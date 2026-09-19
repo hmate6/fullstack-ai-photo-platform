@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Verify Your Email - ImageGen</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for eye icon -->
+  <link rel="stylesheet" href="/static/css/login.css">
+</head>
+
+<body class="bg-dark text-light">
+
+  <div class="centered-box"><div class="modal-body">
+
+     <a href="/">
+      <div class="mb-3">
+      <img src="/static/img/logo/ImageGen.svg" alt="Logo">
+    </a>
+
+    <br>
+
+    <h2 class="mt-3">Almost there!</h2>
+      <img src="/static/emailsvg.svg" width="40" alt="Logo">
+
+        <p class="mt-3">We have sent a verification link to your given email address, click on the link to verify it, or log out and switch to Guest Mode by clicking on 'Continue as Guest' at login. {# and to receive your free 100 credits#} <br><br>If you don't see it, check your spam or wait a few seconds. You can also resend it.</p>
+        <button id="resend-button" class="btn login-button w-100 mt-3" disabled>Resend in <span id="timer">20</span>s</button>
+        <br><br>
+        <a style="margin-top: 2vh" href="/logout?csrf-token={{session.get('csrf_token', None)}}" class="text-para-1">Log me out</a>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  const resendButton = document.getElementById('resend-button');
+  var timerSpan = document.getElementById('timer');
+
+  let countdown = 20;
+  const interval = setInterval(() => {
+    countdown--;
+    timerSpan.textContent = countdown;
+
+    if (countdown <= 0) {
+      clearInterval(interval);
+      resendButton.disabled = false;
+      resendButton.textContent = "Resend Email";
+    }
+  }, 1000);
+
+  resendButton.addEventListener('click', () => {
+    $.ajax({
+      url: '/resend_verification_email', // Replace with your endpoint
+      type: 'POST',
+      data: { csrf_token: "{{session.get('csrf_token')}}" }, // Replace with relevant data
+      success: (response) => {
+        if (response.hasOwnProperty("error")) {
+          if (response.error === "notloggedin") {
+            window.location.href = "/login";
+            return;
+          }
+          else if (response.error === "already_verified") {
+            window.location.href = "/generate";
+              return;
+          }
+          else {
+            alert(response.error)
+
+          }
+          return;
+        }
+
+
+        // Optionally reset the timer
+        countdown = 20;
+        resendButton.disabled = true;
+        resendButton.innerHTML = `Resend in <span id="timer">20</span>s`;
+        timerSpan = document.getElementById('timer');
+        timerSpan.textContent = countdown;
+        setInterval(() => {
+          countdown--;
+          timerSpan.textContent = countdown;
+          if (countdown <= 0) {
+            resendButton.disabled = false;
+            resendButton.textContent = "Resend Email";
+          }
+        }, 1000);
+      },
+      error: (xhr, status, error) => {
+        alert('Failed to resend email. Please try again.');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

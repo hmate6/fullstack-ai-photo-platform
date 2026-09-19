@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Explore Community Shared Images - ImageGen</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore images that were generated with our generator and were shared by users who generated them!">
+    <meta name="keywords" content="ai photos, explore generated photos, ai images, generate images ai">
+    <meta name="author" content="ImageGen">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="ImageGen">
+    <meta property="og:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+    <meta property="og:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+    <meta property="og:url" content="{{HOST}}">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ImageGen">
+    <meta name="twitter:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+    <meta name="twitter:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+
+    <meta name="theme-color" content="#161313">
+    <link rel="canonical" href="{{HOST}}">
+    <meta name="language" content="English">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+
+    <link rel="icon" href="{{HOST}}/static/img/logo/icon.svg" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{HOST}}/static/img/logo/icon.svg">
+
+    <link rel="stylesheet" href="/static/all-icons/myicon.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+</head>
+
+<style>
+@media (min-width: 1199px) and (max-width: 1399px) {
+    #margintop30 {
+        margin-top: -30px
+    }
+}
+.modal-footer, .modal-header, .modal-content {
+        background-color: var(--color-black2) !important; /*#434247*/
+    }
+
+    @media (max-width: 900px) {
+        .style {
+            bottom: 10% !important
+        }
+    }
+
+    .fa-solid {
+        color: red !important;
+    }
+
+    .fa-regular {
+        color: white !important;
+    }
+
+    .btn-info {
+  --bs-btn-color: #000;
+  --bs-btn-bg: #0dcaf0;
+  --bs-btn-border-color: #0dcaf0;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #31d2f2;
+  --bs-btn-hover-border-color: #25cff2;
+  --bs-btn-focus-shadow-rgb: 11, 172, 204;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #3dd5f3;
+  --bs-btn-active-border-color: #25cff2;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: #0dcaf0;
+  --bs-btn-disabled-border-color: #0dcaf0;
+}
+</style>
+<body>
+    <div id="root">
+        <main>
+            {% include "en/sidebar_header.html" %}
+            <section class="banner v2 home-section" {% if not logged_in %} style="margin-top: 14vh" {% endif %}>
+                <div class="container">
+                    <h1 class="text-3 text-bold" style="text-align: center; margin-top: 2%">Explore images created by people just like you!</h1>
+                    <p class="text-para-1 mt-4" style="text-align: center">Browse the gallery of images generated on ImageGen, shared publicly for everyone to explore and enjoy.</p>
+            <section class="services v3 pb-50  pt-50">
+                <div class="container" id="margintop30">
+                    <div class="row justify-content-center mt-space" id="image-container">
+
+                        {% for x in images: %}
+                        <div class="col-md-6 col-xl-4 wow noAniMate" data-wow-delay="0.9s" data-wow-offset="20" data-wow-duration="0.8s">
+                            <div class="card-img-text" style="min-height: 400px; margin-top: 30px">
+                                <div class="banner-card-img">
+                                    <img loading="lazy" src="/static/photo/{{ x['location_without'] }}" alt="{{ x['image_title'] }}">
+                                </div>
+                                <div class="services-card" style="min-height: 400px;">
+
+                                    <h4 class="text-4 text-bold nonselectable">{{ x['ago']}}</h4>
+                                    <a style="position: absolute; bottom: 10%; left: 0; padding: 20px; color: white; outline: black 40px; text-decoration: none; font-size: 20px;" class="style link-anime v8 round-border-full">Style: {{ x["style"] }}</a> {# bottom: 10% #}
+
+                                    <button id="buttonloop{{x['location']}}"
+        style="position: absolute; bottom: 0.5%; left: 0; padding: 20px; color: white; outline: black 40px; text-decoration: none; font-size: 15px;"
+        class="link-anime v8 round-border-full text-capital"
+        onclick="toggleLike('{{x["location"]}}')">
+    <i id="iconloop{{x['location']}}" class="{% if x['location'] in liked_image_ids %}fa-solid{% else %}fa-regular{% endif %} fa-heart fa-1x" style="font-size: 1.5em"></i>
+</button>
+
+<p id="likecountloop{{x['location']}}"
+   style="position: absolute; bottom: 1%; left: 9%; padding: 20px; color: white; outline: black 40px; text-decoration: none; font-size: 15px; pointer-events: none;">
+   {{ x["likes"] }}
+</p>
+
+                                    <a data-bs-toggle="modal" data-bs-target="#exampleModal{{x['location']}}" style="position: absolute; bottom: 0; right: 0; padding: 20px; color: white; outline: black 40px; text-decoration: none; font-size: 20px;" class="link-anime v8 round-border-full text-capital">More <i class="my-icon icon-arrow-right-long"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+
+                        {% if length_of_images_list > 11 %}
+                            {% if logged_in %}
+                            <p id="load_more_parent" style="margin-top: 4%; text-align: center">;<button class="btn-anime v4 text-capital round-border-full" id="load_more">Load more images</button></p>
+                            {% else %}
+                            <h1 class="text-5 text-bold" style="text-align: center; margin-top: 2%">To load and like more images, create a free account in 10 seconds!</h1>
+                            {% endif %}
+                        {% else %}
+                        <h1 class="text-5 text-bold" style="text-align: center; margin-top: 10%">You have reached the end of the list. To upload your generated images here, go to the <a style="color: #fed4ff; text-decoration: underline;" href="/generate">Generate page</a> click on your photo, then click on 'Share'</h1>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="modals">
+            {% for x in images: %}
+          <div class="modal fade" id="exampleModal{{x['location']}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header" style="border-bottom: none">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" style="padding: 0">
+                <img src="/static/photo/{{x['location_without']}}" style="width: 100%; height: 100%">
+
+                <label for="advancedOptionsTextarea{{x}}" style="color: white; padding: var(--bs-modal-padding);" class="form-label">Prompt: {{ x['prompt'] }} <br>Aspect ratio: {{ x['aspect_ratio'] }} <br>Style: {{ x['style'] }}</label>
+
+                {% if 1 != 1 %}
+                <form method="post">
+                    <input style="display: none" type="text" name="prompt" value="{{x['prompt']}}">
+                    <input style="display: none" type="text" name="style" value="{{x['style']}}">
+                    <input style="display: none" type="text" name="aspect_ratio" value="{{x['aspect_ratio']}}">
+                    <br>
+                    <button type="submit" name="generate_same%{{x['location']}}" style="bottom: 1%; right: 0; position: absolute" class="btn btn-info">Generate Same</button>
+                </form>
+            {% endif %}
+              </div>
+              </div>
+            </div>
+          </div>
+
+          {%endfor%}
+
+
+        </div>
+
+        </main>
+    </div>
+
+    <script src="/static/js/jquery-3.7.1.min.js"></script>
+
+    <script>
+        const loaded_images = [
+    {% for x in images %}
+        "{{ x.location }}"{% if not loop.last %}, {% endif %}
+    {% endfor %}
+];
+
+const liked_image_ids = {{liked_image_ids}}
+
+{% if logged_in %}
+
+        function toggleLike(location) {
+            // Get the elements
+
+            const button = document.getElementById(`buttonloop${location}`);
+            button.disabled = true;
+            const icon = document.getElementById(`iconloop${location}`);
+            const likeCountElement = document.getElementById(`likecountloop${location}`);
+
+            // Get the current like count
+            let likes = parseInt(likeCountElement.innerText);
+
+
+
+            $.ajax({
+        url: `/toggle-like`,
+        method: "POST",
+        headers: {"X-CSRF-Token": "{{ session.get('csrf_token') }}"},
+        data: {
+            location: location
+        },
+        success: function(response) {
+            if (response === "not_logged_in") {
+                window.location.href = "/login"
+                return
+            }
+            if (response.hasOwnProperty('cooldown')) {alert("You liked too many images in a short period of time. Take a rest!"); button.disabled = false; return;}
+
+            if (icon.classList.contains('fa-regular')) {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid');
+                icon.style.color = 'red';
+                likes += 1;
+            } else {
+                icon.classList.remove('fa-solid');
+                icon.classList.add('fa-regular');
+                icon.style.color = 'white';
+                likes -= 1;
+            }
+            button.disabled = false;
+            likeCountElement.innerText = likes;
+        },
+        error: function(response) {
+            button.disabled = false;
+            alert('An error occured while trying to like the image.')
+        }
+    });
+        }
+        {% else %}
+        function toggleLike(location) {
+            window.location.href = "login?redirect=explore"
+        }
+        {% endif %}
+        </script>
+
+    <script>
+        function loadImages() {
+    let offset = document.querySelectorAll("div.col-md-6").length;
+    const limit = 12;
+
+    $.ajax({
+        url: `/load-explore-more/${offset}{{sorted_by_argument}}`,
+        data: {
+            offset: offset,
+            limit: limit
+
+        },
+        success: function(response) {
+            if (typeof response === "string") {
+                response = JSON.parse(response);
+            }
+
+            if (!Array.isArray(response)) {
+                response = [response];
+            }
+
+
+            response.forEach(function(item) {
+                const image = item.image;
+                if (loaded_images.includes(image)) {
+
+                }
+                else {
+                const prompt = item.prompt;
+                const style = item.style;
+                const ago = item.ago;
+                const aspect_ratio = item.aspect_ratio;
+                const location = item.location_w_id;
+                const location_without = item.location_without
+                var class_of_heart = "fa-regular";
+
+                if (liked_image_ids.includes(location)) {
+                    class_of_heart = "fa-solid";
+                }
+                const newDiv = $(`
+                    <div class="col-md-6 col-xl-4 wow noAniMate" data-wow-delay="0.9s" data-wow-offset="20" data-wow-duration="0.8s">
+                        <div class="card-img-text" style="min-height: 400px; margin-top: 30px">
+                            <div class="banner-card-img">
+                                <img src="/static/photo/${location_without}" alt="${prompt}">
+                            </div>
+                            <div class="services-card" style="min-height: 400px;">
+                                <h4 class="text-4 text-bold nonselectable">${ago}</h4>
+                                <a style="position: absolute; bottom: 10%; left: 0; padding: 20px; color: white; outline: black 40px; text-decoration: none; font-size: 20px;" class="style link-anime v8 round-border-full">Style: ${style}</a>
+                                <button id="buttonloop${location}"
+                                    style="position: absolute; bottom: 0.5%; left: 0; padding: 20px; color: white; outline: black 40px; text-decoration: none; font-size: 15px;"
+                                    class="link-anime v8 round-border-full text-capital"
+                                    onclick="toggleLike('${location}')">
+                                    <i id="iconloop${location}" class="${class_of_heart} fa-heart fa-1x" style="font-size: 1.5em"></i>
+                                </button>
+                                <p id="likecountloop${location}"
+                                   style="position: absolute; bottom: 1%; left: 9%; padding: 20px; color: white; outline: black 40px; text-decoration: none; font-size: 15px; pointer-events: none;">
+                                   ${item.likes}
+                                </p>
+                                <a data-bs-toggle="modal" data-bs-target="#exampleModal${location}" style="position: absolute; bottom: 0; right: 0; padding: 20px; color: white; outline: black 40px; text-decoration: none; font-size: 20px;" class="link-anime v8 round-border-full text-capital">More <i class="my-icon icon-arrow-right-long"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                $('#image-container').append(newDiv);
+
+                const newModal = $(`
+                    <div class="modal fade" id="exampleModal${location}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header" style="border-bottom: none">
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" style="padding: 0">
+                                    <img src="/static/photo/${location_without}" style="width: 100%; height: 100%">
+                                    <label for="advancedOptionsTextarea${location}" style="color: white; padding: var(--bs-modal-padding);" class="form-label">Prompt: ${prompt} <br>Aspect ratio: ${aspect_ratio} <br>Style: ${style}</label>
+                                </div>
+                                {# <div class="modal-footer" style="border-bottom: none; border-top: none">
+                                    <form method="post">
+                                        <input style="display: none" type="text" name="prompt" value="${prompt}">
+                                        <input style="display: none" type="text" name="style" value="${style}">
+                                        <input style="display: none" type="text" name="aspect_ratio" value="${aspect_ratio}">
+                                        <br>
+                                        <button type="submit" name="generate_same%${location}" style="bottom: 1%; right: 0; position: absolute" class="btn btn-info">Generate Same</button>
+                                    </form>
+                                </div> #}
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                $('#modals').prepend(newModal);
+                loaded_images.push(image)
+                }});
+
+            $('#image-container').append($('#load_more_parent'));
+
+            offset += limit;
+
+            if (response.length < 12) {
+                $('#load_more_parent').remove();
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('There was a problem with loading more images. Please try again later.');
+        }
+    });
+}
+
+
+$(document).ready(function() {
+    $('#load_more').click(function() {
+        loadImages();
+    });
+});
+
+    </script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/plugins.js"></script>
+
+    <script>
+        menuBar();
+        bottomToTop();
+
+        function menuBar() {
+    let copyMenuList = $(".menu-bar .main-menu ul").html();
+    $(".menu-bar .menu-bar-content").append(`<div class="mobile-menu-overlay">`);
+    $("h2").append(`<div class="swiper-pagination-bullet-active">`);
+
+    $(".menu-bar .mobile-menu-btn").on("click", function () {
+      $(this).addClass("active");
+      $(this).parents(".menu-bar-content").find(".mobile-menu-bar").addClass("active");
+      $(this).parents(".menu-bar-content").find(".mobile-menu-overlay").addClass("active");
+    });
+
+    $(".menu-bar .close-mobile-btn, .menu-bar .mobile-menu-overlay").on("click", function () {
+      $(this).parents(".menu-bar-content").find(".mobile-menu-bar, .mobile-menu-btn, .mobile-menu-overlay").removeClass("active");
+      }
+    );
+
+    $(".menu-bar .mobile-menu-bar .mobile-menu-header").after(`
+      <nav class="mobile-main-manu">
+        <ul>${copyMenuList}</ul>
+      </nav>
+    `);
+
+    $(".menu-bar .mobile-main-manu li:has(ul) > a").on("click", function (e) {
+      e.preventDefault();
+      const $parent = $(this).parent("li");
+      const $siblings = $parent.siblings("li");
+      const isActive = $parent.hasClass("active");
+      if (isActive) {
+        $parent.removeClass("active");
+        $parent.find("ul").slideUp();
+      } else {
+        $parent.addClass("active");
+        $siblings.removeClass("active");
+        $siblings.children("ul:visible").slideUp();
+        $parent.children("ul").slideDown();
+      }
+    });
+
+    $(".menu-bar .mobile-main-manu .has-dropdown").find(".active").parent().slideDown();
+
+    $(window).scroll(() => {
+      let menuBar = $(".menu-bar");
+
+      if (menuBar.hasClass("v1")){
+        if ($(window).scrollTop() > 0) {
+          menuBar.addClass("sticky-header");
+        } else {
+          menuBar.removeClass("sticky-header");
+        }
+      }
+      else if (menuBar.hasClass("v2") || menuBar.hasClass("v3")){
+        let scrollTop = $(window).scrollTop();
+        let shouldAddSticky = (screen.width >= 576 && scrollTop > 20) || (screen.width <= 576 && scrollTop > 0);
+
+        if (shouldAddSticky) {
+          menuBar.addClass("sticky-header");
+        } else {
+          menuBar.removeClass("sticky-header");
+        }
+      }
+
+    });
+  }
+
+  function bottomToTop() {
+    let scrollTop = $(".scroll-bottom-top");
+
+    let sectionScrollHight = $("main")
+      .find(".banner,.breadcum")
+      .first()
+      .outerHeight();
+
+    $(window).scroll(function () {
+      if ($(window).scrollTop() > sectionScrollHight / 2) {
+        scrollTop.addClass("show");
+      } else {
+        scrollTop.removeClass("show");
+      }
+    });
+
+    scrollTop.on("click", function (e) {
+      e.preventDefault();
+      $("html, body").animate({ scrollTop: 0 }, "300");
+    });
+  }
+    </script>
+</body>
+
+{% include "en/app_footer.html" %}
+
+</html>

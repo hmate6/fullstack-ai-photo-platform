@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Reset your Password - ImageGen</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for eye icon -->
+  <link rel="stylesheet" href="/static/css/login.css">
+</head>
+
+<body class="bg-dark text-light">
+
+  <div class="centered-box"><div class="modal-body">
+
+     <a href="/">
+      <div class="mb-3">
+      <img src="/static/img/logo/ImageGen.svg" alt="Logo">
+    </a>
+
+    <h2 class="mb-3 mt-3">Password Reset</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages[0] == "expired" %}
+        <p style="margin-bottom: 0%">Password reset link is expired.</p>
+      {% else %}
+
+        <form method="post" id="loginform">
+          <input type="hidden" name="csrf_token" value="{{ session.get('csrf_token') }}">
+          <div class="mb-3 text-start mt-4">
+            <label for="password" class="input-label d-flex justify-content-between align-items-center">
+              <span>Enter your new password</span>
+              <button type="button" class="password-toggle" onclick="togglePasswordVisibility()">
+                <i id="eyeIcon" class="fa fa-eye"></i> <span id="toggleText">Show</span>
+              </button>
+            </label>
+            <input type="password" id="password" name="password" class="form-control" required>
+            <label for="password" class="input-label d-flex justify-content-between align-items-center">
+              <span>Enter your new password again</span>
+            </label>
+            <input type="password" id="password2" name="password2" class="form-control" required>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages and messages[0] != "indexgen" %}
+                <p class="wrong-credentials" style="color: red;">
+                  <i class="fa-solid fa-circle-exclamation"></i> {{ messages[0]|safe }}
+                </p>
+              {% endif %}
+            {% endwith %}
+
+          </div>
+          <button type="submit" name="login_send" class="btn login-button w-100 mt-3">Reset Password</button>
+        </form>
+
+    {% endif %}
+    {% endwith %}
+  </div>
+</div>
+
+<script>
+  function togglePasswordVisibility() {
+    const passwordField = document.getElementById("password");
+    const passwordField2 = document.getElementById("password2");
+    const toggleText = document.getElementById("toggleText");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      passwordField2.type = "text";
+      toggleText.innerText = "Hide";
+      eyeIcon.classList.remove("fa-eye");
+      eyeIcon.classList.add("fa-eye-slash");
+    } else {
+      passwordField.type = "password";
+      passwordField2.type = "password";
+      toggleText.innerText = "Show";
+      eyeIcon.classList.remove("fa-eye-slash");
+      eyeIcon.classList.add("fa-eye");
+    }
+  }
+
+  function isPasswordInvalid(password) {
+    // Check if password lacks lowercase letters
+    const lacksLowercase = !/[a-z]/.test(password);
+    // Check if password lacks uppercase letters
+    const lacksUppercase = !/[A-Z]/.test(password);
+    // Check if password lacks numbers
+    const lacksNumber = !/[0-9]/.test(password);
+    // Check if password lacks special characters
+    const lacksSpecialChar = !/[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    // Return true if any of the criteria is not met
+    return lacksLowercase || lacksUppercase || lacksNumber || lacksSpecialChar;
+}
+
+  document.getElementById("loginform").addEventListener("submit", function(event) {
+      var input = document.getElementById('password').value;
+      if (input === '') {
+          alert('The password field cannot be empty.');
+          event.preventDefault();
+      }
+      else if (input.length < 8) {
+        alert("Password must be atleast 8 characters!");
+        event.preventDefault();
+      }
+      else if (input.length > 50) {
+        alert("Password' length must not be higher than 50 characters!");
+        event.preventDefault();
+      }
+      else if (input !== document.getElementById("password2").value) {
+        alert("Passwords do not match!");
+        event.preventDefault();
+      }
+      else if (isPasswordInvalid(input)) {
+        alert("Please include lower/uppercase characters, numbers and special characters in your password.")
+        event.preventDefault();
+      }
+      });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Extract Frames from Videos</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Frame Extractor Tool - Extract & Download Video Frames Instantly</title>
+
+    <!-- CHANGED: a sidebar_header.html include innen at lett helyezve a body eleje ele --
+         lasd a magyarazatot lent a body tagnel. Ez a sablon volt az EGYETLEN, ahol ez a head-be volt teve. -->
+    <!-- FIX: was a hardcoded absolute URL to a real personal domain; switched to the relative path every other template uses. -->
+    <link rel="apple-touch-icon" href="/static/img/logo/icon.svg">
+
+
+    <link rel="stylesheet" href="/static/all-icons/myicon.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <style>
+        ul {
+            padding-left: 0
+        }
+
+        #pc_view_credits {
+            right: 5px;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #161313
+        }
+        video {
+            display: block;
+            max-height: 60vh; /* Keep the aspect ratio */
+            max-width: 100%;   /* Ensure the video scales to the width of the container */
+            margin: 20px 0;
+        }
+        .container-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        input[type="range"] {
+            width: 90%;
+            max-width: 600px;
+            margin-top: 10px;
+        }
+        .info-div {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        input {
+            height: auto;
+            color: white;
+        }
+
+        label {
+            color: white
+        }
+        .form-control {
+            background-color: rgb(215, 218, 255);
+            border-color: transparent
+        }
+
+        header {
+            margin-bottom: 15vh; /* Ensure the correct selector for the header */
+        }
+
+        @media (min-width: 992px) {
+            header {
+                margin-bottom: 20vh;
+            }
+        }
+
+        .hidden {
+            display: none
+        }
+
+        input[type=file]::file-selector-button {
+  background-color: #aca6ff; /*#a29bfe*/
+  transition: 0.8s;
+}
+
+        .info-div {
+            color: white
+        }
+
+        /* ADDED: "Show Demo" button + modal viewer for the demo screenshot (static/demo/frame_extract.png). */
+        .demo-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .demo-btn:hover {
+            background: rgba(255, 255, 255, 0.16);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .demo-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .demo-modal-overlay.open {
+            display: flex;
+        }
+
+        .demo-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .demo-modal-content img {
+            display: block;
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            margin: 0 auto;
+        }
+
+        .demo-modal-close {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fff;
+            color: #111;
+            border: none;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+
+
+</head>
+    <body style="background: #161313;">
+    <!-- FIX: a sidebar_header.html include ide lett athelyezve a <head>-bol. Amiatt villant fel
+         egy pillanatra feher hatter betoltodeskor: a sidebar_header.html tenyleges LATHATO
+         markupot (div-eket) tartalmaz, nem csak head-be valo elemeket. Amikor <head>-en belul
+         volt, a bongeszo HTML-parsere a div-nel automatikusan lezarta a <head>-et es korai
+         (implicit) <body>-t nyitott -- emiatt a tobbi <head>-tartalom (a lenti <style> blokk a
+         sotet hatterrel egyutt!) mar a body resze lett, es csak KESOBB, a tenyleges parsolaskor
+         alkalmazodott. Igy a bongeszo mar rajzolt (feher hatterrel), mielott a sotet hatter
+         beallitas ervenybe lepett volna. A tobbi sablonban (imagetotext.html, explore.html,
+         generate.html) ez az include mindig a <body> elejen van, most itt is ugyanugy van. -->
+    {% include "en/sidebar_header.html" %}
+
+    <h2 class="text-2" style="font-family: Readex Pro, sans-serif; font-size: 30px; font-weight: 700; line-height: 1.4; text-align: center; margin-top: 4vh; color: white !important">Extract Frames From Video</h2>
+
+    <!-- ADDED: opens a modal showing the demo screenshot. -->
+    <div style="text-align: center; margin: 6px 0 14px 0;">
+        <button type="button" class="demo-btn" id="showDemoBtn">&#9654; Show Demo</button>
+    </div>
+
+    <!-- ADDED: modal viewer for the demo screenshot, opened by the "Show Demo" button above. -->
+    <div class="demo-modal-overlay" id="demoModalOverlay">
+        <div class="demo-modal-content">
+            <button type="button" class="demo-modal-close" id="demoModalClose" aria-label="Close">&times;</button>
+            <img src="/static/demo/frame_extract.png" alt="Example of a frame extracted from a video">
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('showDemoBtn');
+            var overlay = document.getElementById('demoModalOverlay');
+            var closeBtn = document.getElementById('demoModalClose');
+
+            function openDemo() {
+                overlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeDemo() {
+                overlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            if (btn && overlay && closeBtn) {
+                btn.addEventListener('click', openDemo);
+                closeBtn.addEventListener('click', closeDemo);
+                overlay.addEventListener('click', function (e) {
+                    if (e.target === overlay) closeDemo();
+                });
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && overlay.classList.contains('open')) closeDemo();
+                });
+            }
+        })();
+    </script>
+
+    <div class="container-top">
+        <div class="mb-3 mt-20">
+            <label id="fileInputLabel" for="fileInput" class="form-label"><b>Select a Video</b> to Start</label>
+            <input type="file" id="fileInput" class="form-control" accept="video/*">
+        </div>
+        <div class="mb-4">
+            <label for="rateInput" class="form-label">Frames Per Second</label>
+            <input type="number" id="rateInput" class="form-control" placeholder="Enter frame rate" value="24" min="1" max="900">
+        </div>
+    </div>
+
+    <div id="frame-display">
+        <video id="videoPlayer"></video>
+        <canvas id="frameCanvas" style="display:none;"></canvas>
+    </div>
+
+    <div class="info-div hidden">
+        {# <a href="/pricing" style="margin-top: 20%">
+            Support Us <i class="fa-regular fa-face-smile-beam"></i>
+        </a> #}
+        <div id="dimensionDiv"></div>
+        <div id="ogdimensionDiv"></div>
+        <div id="durationDiv"></div>
+        <div id="frameDiv"></div>
+    </div>
+
+    {# <div class="info-div hidden">
+        <a href="/pricing" style="margin-top: 20%">
+            Support Us <i class="fa-regular fa-face-smile-beam"></i>
+        </a>
+        <div id="dimensionDiv"></div>
+        <div id="ogdimensionDiv"></div>
+        <div id="durationDiv"></div>
+        <div id="frameDiv"></div>
+    </div> #}
+
+    <input type="range" id="frameSlider" disabled />
+
+    <div class="controls" style="margin-bottom: 2%">
+        <button class="btn btn-primary" id="backOneFrame">
+            <i class="fas fa-arrow-left"></i> -1 Frame
+        </button>
+        <button class="btn btn-success" id="downloadFrame">
+            <i class="fas fa-download"></i> Download Frame
+        </button>
+        <button class="btn btn-primary" id="forwardOneFrame">
+            +1 Frame <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <p style="font-size: 14px;line-height: 1.3; margin-top: 40px; margin-bottom: 20px; text-align: center; color: #d1d1d1; width: 70%"><b>The videos won't be uploaded on our server</b>, the whole process is computed on your device. Speed depends on how strong your hardware is, for example on PC, jumping between frames will be faster then on mobile. Increase the "Frames per second" value to extract more frames.{# <br><b>No login required.</b> #}</p>
+
+
+    {% include "en/app_footer.html" %}
+</body>
+
+<script src="/static/js/bootstrap.min.js"></script>
+<script>
+    window.addEventListener('load', () => {
+        const fileInput = document.querySelector('#fileInput');
+        const fileInputLabel = document.querySelector('#fileInputLabel');
+        const rateInput = document.querySelector('#rateInput');
+        const frameInput = document.querySelector('#frameSlider');
+        const video = document.querySelector('#videoPlayer');
+        const canvas = document.querySelector('#frameCanvas');
+        const dimensionDiv = document.querySelector('#dimensionDiv');
+        const ogdimensionDiv = document.querySelector('#ogdimensionDiv');
+        const durationDiv = document.querySelector('#durationDiv');
+        const frameDiv = document.querySelector('#frameDiv');
+        const downloadFrameButton = document.querySelector('#downloadFrame');
+        const backOneFrameButton = document.querySelector('#backOneFrame');
+        const forwardOneFrameButton = document.querySelector('#forwardOneFrame');
+
+        let scaleFactor = 0.5;
+        let frameCache = {};
+        let frameChangeInterval;
+        let buttonHeld = false;
+        let holdTimeout;
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length === 0) return;
+            if (fileInput.files.length > 1) {
+                alert('Select only a single file!');
+                return;
+            }
+            const url = URL.createObjectURL(fileInput.files[0]);
+            video.src = url;
+
+            document.querySelector(".info-div").classList.remove("hidden");
+            fileInputLabel.innerHTML = "Would you like to select another video?";
+        });
+
+        rateInput.addEventListener('change', () => {
+            if (video.duration) {
+                const frames = Math.floor(video.duration * rateInput.valueAsNumber);
+                frameInput.max = frames - 1;
+                frameDiv.textContent = `Frame ${frameInput.value} / ${frames}`;
+            }
+        });
+
+        frameInput.addEventListener('input', () => {
+            const frames = Math.floor(video.duration * rateInput.valueAsNumber);
+            const frameIndex = frameInput.valueAsNumber;
+
+            if (frameCache[frameIndex]) {
+                {# console.log(`Fetching from cache for frame ${frameIndex}`); #}
+                updateCanvas(frameCache[frameIndex].scaled);
+            } else {
+                {# console.log(`Frame ${frameIndex} not in cache, seeking video`); #}
+                video.currentTime = frameIndex / rateInput.valueAsNumber;
+            }
+
+            updateInfo();
+        });
+
+        video.addEventListener('loadedmetadata', () => {
+            const scaledWidth = video.videoWidth * scaleFactor;
+            const scaledHeight = video.videoHeight * scaleFactor;
+            dimensionDiv.textContent = `Loaded dimensions: ${scaledWidth}x${scaledHeight}`;
+            ogdimensionDiv.textContent = `Original dimensions: ${scaledWidth / scaleFactor}x${scaledHeight / scaleFactor}`;
+            durationDiv.textContent = `${video.duration.toFixed(2)} seconds`;
+            frameInput.value = 0;
+            rateInput.dispatchEvent(new Event('change'));
+            frameInput.removeAttribute('disabled');
+
+            video.width = scaledWidth;
+            video.height = scaledHeight;
+
+            video.controls = false;
+        });
+
+        video.addEventListener('seeked', () => {
+            const frameIndex = Math.floor(video.currentTime * rateInput.valueAsNumber);
+
+            if (!frameCache[frameIndex]) {
+                const context = canvas.getContext('2d');
+                const originalCanvas = document.createElement('canvas');
+                const originalContext = originalCanvas.getContext('2d');
+
+                const scaledWidth = video.videoWidth * scaleFactor;
+                const scaledHeight = video.videoHeight * scaleFactor;
+
+                canvas.width = scaledWidth;
+                canvas.height = scaledHeight;
+
+                originalCanvas.width = video.videoWidth;
+                originalCanvas.height = video.videoHeight;
+
+                originalContext.drawImage(video, 0, 0, originalCanvas.width, originalCanvas.height);
+
+                frameCache[frameIndex] = {
+                    scaled: canvas.toDataURL(),
+                    original: originalCanvas.toDataURL()
+                };
+                {# console.log(`Caching frame ${frameIndex}`); #}
+            }
+
+            updateCanvas(frameCache[frameIndex].scaled);
+            updateInfo();
+        });
+
+        function updateCanvas(frameDataUrl) {
+            const img = new Image();
+            img.src = frameDataUrl;
+            img.onload = () => {
+                const context = canvas.getContext('2d');
+                const scaledWidth = video.videoWidth * scaleFactor;
+                const scaledHeight = video.videoHeight * scaleFactor;
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+            };
+        }
+
+        function updateInfo() {
+            const frames = Math.floor(video.duration * rateInput.valueAsNumber);
+            durationDiv.textContent = `Time: ${video.currentTime.toFixed(2)} / ${video.duration.toFixed(2)}s`;
+            frameDiv.textContent = `Frame ${Math.floor(video.currentTime * rateInput.valueAsNumber)} / ${frames}`;
+        }
+
+        downloadFrameButton.addEventListener('click', () => {
+            const currentFrameIndex = Math.floor(video.currentTime * rateInput.valueAsNumber);
+            const originalFrameDataUrl = frameCache[currentFrameIndex]?.original || '';
+
+            if (originalFrameDataUrl) {
+                const a = document.createElement('a');
+                a.download = `frame_${currentFrameIndex}.png`;
+                a.href = originalFrameDataUrl;
+                a.click();
+            } else {
+                alert('Frame not available for download!');
+            }
+        });
+
+        function adjustFrame(direction) {
+            const frameRate = rateInput.valueAsNumber;
+            const frameTime = 1 / frameRate;
+            video.currentTime = Math.min(video.duration, Math.max(0, video.currentTime + (direction * frameTime)));
+            frameInput.value = Math.floor(video.currentTime * frameRate);
+            updateInfo();
+        }
+
+        function startFrameChange(direction) {
+            holdTimeout = setTimeout(() => {
+                buttonHeld = true;
+                frameChangeInterval = setInterval(() => adjustFrame(direction), 50);
+            }, 600);
+
+            adjustFrame(direction);
+        }
+
+        function stopFrameChange() {
+            clearTimeout(holdTimeout);
+            if (buttonHeld) {
+                buttonHeld = false;
+                clearInterval(frameChangeInterval);
+            }
+        }
+
+        backOneFrameButton.removeEventListener('click', adjustFrame);
+        forwardOneFrameButton.removeEventListener('click', adjustFrame);
+
+        backOneFrameButton.addEventListener('mousedown', () => startFrameChange(-1));
+        backOneFrameButton.addEventListener('mouseup', stopFrameChange);
+        backOneFrameButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startFrameChange(-1);
+        });
+        backOneFrameButton.addEventListener('touchend', stopFrameChange);
+
+        forwardOneFrameButton.addEventListener('mousedown', () => startFrameChange(1));
+        forwardOneFrameButton.addEventListener('mouseup', stopFrameChange);
+        forwardOneFrameButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startFrameChange(1);
+        });
+        forwardOneFrameButton.addEventListener('touchend', stopFrameChange);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                frameInput.dispatchEvent(new Event('input'));
+                frameInput.focus();
+            }
+        });
+
+        if (fileInput.value) {
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+</html>

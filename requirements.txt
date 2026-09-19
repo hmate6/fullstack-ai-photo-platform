@@ -1,0 +1,31 @@
+# A csomaglista a kódban talált import-ok alapján lett összeállítva.
+# Verziószám szándékosan nincs rögzítve, mert nem volt elérhető a projekt
+# saját futtató környezete -- ajánlott a saját venv-edben lefuttatni:
+#   pip freeze > requirements.txt
+# hogy pontosan a nálad bevált verziók legyenek rögzítve.
+
+# --- Flask app keretrendszer ---
+Flask
+Flask-SQLAlchemy
+Flask-Session
+Flask-Limiter
+SQLAlchemy
+Werkzeug
+python-dotenv
+
+# --- Bejelentkezés / auth ---
+Authlib
+bcrypt
+bleach
+MarkupSafe
+
+# --- Háttérfeladatok / cache ---
+redis
+celery
+APScheduler
+
+# --- Külső API-k / kép feldolgozás ---
+requests
+Pillow
+filetype
+replicate

@@ -1,0 +1,330 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+
+@media (max-width: 768px) {
+    #bemeneti_szoveg {
+       min-height: 240px;
+    }
+
+    #alcim {
+    font-weight: 700;
+    }
+}
+
+@media (min-width: 769px) {
+    #bemeneti_szoveg {
+       min-height: 120px;
+    }
+    .banner.v2.pt-140.pb-50.pb-lg-70 {
+        margin-top: 2%;
+    }
+}
+
+@media (max-width: 1200px) {
+    #kerdojel {
+        display: none
+    }
+}
+
+@keyframes fade {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.poppins-medium {
+    font-family: "Poppins", system-ui;
+    font-style: normal;
+}
+
+
+
+@media (min-width: 1199px) and (max-width: 1399px) {
+    #margintop30 {
+        margin-top: -30px
+    }
+}
+
+@media (min-width: 767px) and (max-width: 992px) {
+    #generatedimgdiv {
+        margin-top: 30px
+    }
+}
+.dot-windmill-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Full viewport height for vertical centering */
+    }
+    .dot-windmill {
+      position: relative;
+      top: -10px;
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      background-color: #9880ff;
+      color: #9880ff;
+      transform-origin: 5px 15px;
+      animation: dot-windmill 2s infinite linear;
+    }
+    .dot-windmill::before, .dot-windmill::after {
+      content: "";
+      display: inline-block;
+      position: absolute;
+    }
+    .dot-windmill::before {
+      left: -8.66254px;
+      top: 15px;
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      background-color: #9880ff;
+      color: #9880ff;
+    }
+    .dot-windmill::after {
+      left: 8.66254px;
+      top: 15px;
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      background-color: #9880ff;
+      color: #9880ff;
+    }
+    
+    @keyframes dot-windmill {
+      0% {
+        transform: rotateZ(0deg) translate3d(0, 0, 0);
+      }
+      100% {
+        transform: rotateZ(720deg) translate3d(0, 0, 0);
+      }
+    }
+    
+    
+    
+    /*Elastic*/
+                                                .dot-elastic-container {
+                                                  display: flex;
+                                                  justify-content: center;
+                                                  align-items: center;
+                                                  height: 100%; /* Full viewport height for vertical centering */
+                                                }
+                                              
+                                                .dot-elastic {
+                                                  position: relative;
+                                                  width: 40px; /* Increased size */
+                                                  height: 40px; /* Increased size */
+                                                  border-radius: 20px;
+                                                  border-radius: 0px;
+                                                  background-color: #9880ff;
+                                                  color: #9880ff;
+                                                  animation: dot-elastic 1s infinite linear;
+                                                }
+                                              
+                                                .dot-elastic::before, .dot-elastic::after {
+                                                  content: "";
+                                                  display: inline-block;
+                                                  position: absolute;
+                                                  top: 0;
+                                                }
+                                              
+                                                .dot-elastic::before {
+                                                  left: -60px; /* Adjusted spacing */
+                                                  width: 40px; /* Increased size */
+                                                  height: 40px; /* Increased size */
+                                                  border-radius: 20px;
+                                                  background-color: #9880ff;
+                                                  color: #9880ff;
+                                                  animation: dot-elastic-before 1s infinite linear;
+                                                }
+                                              
+                                                .dot-elastic::after {
+                                                  left: 60px; /* Adjusted spacing */
+                                                  width: 40px; /* Increased size */
+                                                  height: 40px; /* Increased size */
+                                                  border-radius: 20px;
+                                                  background-color: #9880ff;
+                                                  color: #9880ff;
+                                                  animation: dot-elastic-after 1s infinite linear;
+                                                }
+                                              
+                                                @keyframes dot-elastic-before {
+                                                  0% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                  25% {
+                                                    transform: scale(1, 1.5);
+                                                  }
+                                                  50% {
+                                                    transform: scale(1, 0.67);
+                                                  }
+                                                  75% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                  100% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                }
+                                              
+                                                @keyframes dot-elastic {
+                                                  0% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                  25% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                  50% {
+                                                    transform: scale(1, 1.5);
+                                                  }
+                                                  75% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                  100% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                }
+                                              
+                                                @keyframes dot-elastic-after {
+                                                  0% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                  25% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                  50% {
+                                                    transform: scale(1, 0.67);
+                                                  }
+                                                  75% {
+                                                    transform: scale(1, 1.5);
+                                                  }
+                                                  100% {
+                                                    transform: scale(1, 1);
+                                                  }
+                                                }
+
+                                                .banner-card-img {
+                                                    position: relative;
+                                                    }
+                                                    
+                                                    #services .banner-card-img::before {
+                                                    content: "";
+                                                    position: absolute;
+                                                    top: 0;
+                                                    left: 0;
+                                                    width: 100%;
+                                                    height: 100%;
+                                                    background-color: rgba(0, 0, 0, 0.6); /* 50% darker */
+                                                    z-index: 1;
+                                                    }
+                                                    
+                                                    
+                                                    #services .banner-card-img::before {
+                                                    content: "";
+                                                    position: absolute;
+                                                    top: 0;
+                                                    left: 0;
+                                                    width: 100%;
+                                                    height: 100%;
+                                                    background-color: rgba(0, 0, 0, 0.6); /* 60% darker */
+                                                    z-index: 1;
+                                                    transition: background-color 0.3s ease; /* Smooth transition */
+                                                    }
+                                                    
+                                                    
+                                                    #services .banner-card-img img {
+                                                    width: 100%;
+                                                    height: auto;
+                                                    display: block;
+                                                    position: relative;
+                                                    z-index: 0; /* Ensures image is below the dark overlay */
+                                                    }
+                                                    
+                                                    #services .banner-card-img:hover::before {
+                                                    background-color: rgba(0, 0, 0, 0.1);
+                                                    }
+                                                    
+                                                    #services div .card-img-text {
+                                                      cursor: pointer
+                                                    }
+                                                    
+                                                    .imagegen i,.card-img-text:hover .services-card h4 a, .card-img-text:hover .services-card .link-anime.v8 {
+                                                      transition: 0.7s ease;
+                                                      color: rgb(170, 0, 255) !important;
+                                                    }
+                                                    
+                                                    /* Hover effect for Image To Text */
+                                                    .tti i, .tti .card-img-text:hover .services-card h4 a, .tti .card-img-text:hover .services-card .link-anime.v8 {
+                                                      transition: 0.7s ease;
+                                                      color: rgb(0, 255, 0) !important;
+                                                    }
+                                                    
+                                                    /* Hover effect for 3D Gen */
+                                                    .gen3d i, .gen3d .card-img-text:hover .services-card h4 a, .gen3d .card-img-text:hover .services-card .link-anime.v8 {
+                                                      transition: 0.7s ease;
+                                                      color: rgb(255, 247, 0) !important;
+                                                    }
+                                                    
+                                                    /* Hover effect for Enhance */
+                                                    .enhance i, .enhance .card-img-text:hover .services-card h4 a, .enhance .card-img-text:hover .services-card .link-anime.v8 {
+                                                      transition: 0.7s ease;
+                                                      color: rgb(0, 255, 251) !important;
+                                                    }
+                                                    
+                                                    /* Hover effect for Background Editor */
+                                                    .bgedit i, .bgedit .card-img-text:hover .services-card h4 a, .bgedit .card-img-text:hover .services-card .link-anime.v8 {
+                                                      transition: 0.7s ease;
+                                                      color: rgb(39, 136, 255) !important;
+                                                    }
+                                                    
+                                                    /* Hover effect for Frame Extractor */
+                                                    .frame_extractor i, .frame_extractor .card-img-text:hover .services-card h4 a, .frame_extractor .card-img-text:hover .services-card .link-anime.v8 {
+                                                      transition: 0.7s ease;
+                                                      color: rgb(255, 81, 0) !important;
+                                                    }
+                                                    
+                                                    .upgrade_plan i, .upgrade_plan .card-img-text:hover .services-card h4 a, .upgrade_plan .card-img-text:hover .services-card .link-anime.v8 {
+                                                      transition: 0.7s ease;
+                                                      color: rgb(255, 196, 0) !important;
+                                                    }
+                                                    
+                                                    
+                                                    /* Hover effect for Settings */
+                                                    .settings, li:hover .settings, .settings:hover {
+                                                      color: rgb(170, 0, 255) !important;
+                                                    }
+                                                    
+                                                    .services-card h4 a i {
+                                                      margin-right: 5px
+                                                    }
+                                                    
+                                                    .services-card .text-para-1 {
+                                                      height: 120px
+                                                    }
+                                                    
+                                                    .swiper-slide .collaboration-card .text-para-1 {
+                                                      height: 120px
+                                                    }
+
+                                                    @media (max-width: 991px) {
+                                                        .banner.v2 {
+                                                            padding-top: 110px 
+                                                        }
+                                                    }
+
+                                                    @media (max-width: 756px) {
+                                                        #imagecount {
+                                                            margin-top: 10%;
+                                                        }
+                                                    }
+
+
+
+                                          #letrehozas:disabled {
+                                            border: 1px solid grey;
+                                            background-color: grey;
+                                          }

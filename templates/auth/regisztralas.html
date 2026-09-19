@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - ImageGen</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Register an ImageGen account to start generating, enhancing images!">
+  <meta name="keywords" content="ImageGen register, imegerest get started, signup, ImageGen sign up, ImageGen registration, ImageGen create account">
+  <meta name="author" content="ImageGen">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:title" content="ImageGen">
+  <meta property="og:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+  <meta property="og:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+  <meta property="og:url" content="{{HOST}}">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ImageGen">
+  <meta name="twitter:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+  <meta name="twitter:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+
+  <meta name="theme-color" content="#161313">
+  <link rel="canonical" href="{{HOST}}">
+  <meta name="language" content="English">
+  <meta name="coverage" content="Worldwide">
+  <meta name="rating" content="General">
+
+  <link rel="icon" href="{{HOST}}/static/img/logo/icon.svg" type="image/x-icon">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for eye icon -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<body class="bg-dark text-light">
+
+<div class="centered-box"><div class="modal-body">
+     <a href="/">
+    <div class="mb-3">
+      <img src="/static/img/logo/ImageGen.svg" alt="Logo">
+    </div>
+    </a>
+    <h2 class="mb-1">Sign Up</h2>
+
+    {% with messages = get_flashed_messages() %}
+  {% if messages[0] == "indexgen" %}
+  <p class="mb-3 text-bold">Wow! Your previous image was so beautiful! To continue generating free images, and to unlock styles and orientations, please create an account or login.</p>
+  {% endif %}
+{% endwith %}
+
+
+    <a href='/continue-w-google' class="social-login-button nonselectable" style="text-decoration: none;">
+      <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google">
+      <span>Continue with Google</span>
+    </a>
+
+    <div class="divider">OR</div>
+
+
+    <form method="post" id="loginform">
+      <input type="hidden" name="csrf_token" value="{{ session.get('csrf_token') }}">
+      <div class="mb-3 text-start">
+
+        <label for="email" class="input-label">Your email</label>
+        <input type="email" id="email" name="email" class="form-control" required>
+      </div>
+
+      <div class="mb-3 text-start">
+        <label for="password" class="input-label d-flex justify-content-between align-items-center">
+          <span>Password - Make It Hard To Guess</span>
+          <button type="button" class="password-toggle" onclick="togglePasswordVisibility()">
+            <i id="eyeIcon" class="fa fa-eye"></i> <span id="toggleText">Show</span>
+          </button>
+        </label>
+        <input type="password" id="password" name="password" class="form-control" onfocus="OnFocusPassword()" onblur="OnBlurPassword()" required>
+        <p style="display: none" class="nonselectable" id="password_requirements" style="color: white; font-size: 10px; margin-left: 3%; display: none">
+            Must be at least 8 characters long <br>Must contain special characters and numbers <br>Must contain lower and uppercase characters
+          </p>
+        {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% if messages[0] != "indexgen" %}
+    <p class="wrong-credentials" style="color: red;">
+      <i class="fa-solid fa-circle-exclamation"></i> {{ messages[0]|safe }}
+    </p>
+    {% endif %}
+  {% endif %}
+{% endwith %}
+
+      </div>
+
+      <div class="form-check nonselectable">
+        <label class="form-check-label" for="agree_legal" style="text-align: left; color: rgb(196, 196, 196); margin-top: -2%; font-size: 13px">
+          With creating an account I accept the <a href="/legal" class="text-info" style="text-decoration: none;">Terms of Service</a> and <a href="/legal" style="text-decoration: none;" class="text-info">Privacy Policy</a>
+        </label>
+      </div>
+
+      <div class="form-check nonselectable">
+        <input class="form-check-input" type="checkbox" id="email_subscribe" name="email_news_subscribe">
+        <label class="form-check-label" for="email_subscribe" style="padding-top: 7px; text-align: center; color: rgb(196, 196, 196); margin-top: -2%; font-size: 13px">
+          I would like to receive occasional emails to get the latest news, tips and special offers.
+        </label>
+      </div>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAAy-U_C1A9xrtPXT" data-callback="enableSubmit" data-size="flexible"></div>
+      <input type="hidden" id="turnstileToken" name="turnstileToken">
+
+      <button type="submit" id="submitButton" name="login_send" style="margin-bottom: 20px" class="btn login-button w-100 mt-3" disabled>Create Account</button>
+      <div class="divider"></div>
+      <p class="mb-3">Already have an account? <a href="login{% if request.args.get('redirect') %}?redirect={{ request.args.get('redirect') }}{% endif %}" class="text-info">Log in here</a></p>
+
+      <p id="verification" class="mt-1" style="font-size: 10px; position: absolute; bottom: -35px; display: none">Checking if you are human... Might take up to a few seconds on slower connections...</p>
+    </form>
+  </div>
+</div>
+
+<script>
+  var email_input = document.getElementById("email");
+  var verification = document.getElementById("verification");
+
+
+function enableSubmit(token) {
+      document.getElementById('submitButton').disabled = false;
+
+        document.getElementById('turnstileToken').value = token;
+
+        verification.style.display = "none";
+ }
+
+document.getElementById("agree_legal").addEventListener("change", function() {
+    this.value = this.checked ? "true" : "false";
+  });
+
+  document.getElementById("email_subscribe").addEventListener("change", function() {
+    this.value = this.checked ? "true" : "false";
+  });
+
+function isPasswordInvalid(password) {
+    // Check if password lacks lowercase letters
+    const lacksLowercase = !/[a-z]/.test(password);
+    // Check if password lacks uppercase letters
+    const lacksUppercase = !/[A-Z]/.test(password);
+    // Check if password lacks numbers
+    const lacksNumber = !/[0-9]/.test(password);
+    // Check if password lacks special characters
+    const lacksSpecialChar = !/[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    // Return true if any of the criteria is not met
+    return lacksLowercase || lacksUppercase || lacksNumber || lacksSpecialChar;
+}
+
+  function OnFocusPassword() {
+    document.getElementById("password_requirements").style.display = "none"; {# block #}
+  }
+  function OnBlurPassword () {
+    document.getElementById("password_requirements").style.display = "none";
+  }
+
+  // JavaScript function to toggle password visibility
+  function togglePasswordVisibility() {
+    const passwordField = document.getElementById("password");
+    const toggleText = document.getElementById("toggleText");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      toggleText.innerText = "Hide";
+      eyeIcon.classList.remove("fa-eye");
+      eyeIcon.classList.add("fa-eye-slash");
+    } else {
+      passwordField.type = "password";
+      toggleText.innerText = "Show";
+      eyeIcon.classList.remove("fa-eye-slash");
+      eyeIcon.classList.add("fa-eye");
+    }
+  }
+
+  document.getElementById("loginform").addEventListener("submit", function(event) {
+    var agree_legal = document.getElementById("agree_legal").value;
+
+    if (!agree_legal) {
+      alert("You must accept the Terms of Service and Privacy Policy to continue.")
+      event.preventDefault();
+      return
+    }
+
+    var email_value = document.getElementById("email").value;
+
+      if (email_value.length < 3) {
+        alert("Incorrect e-mail address!");
+        event.preventDefault(); // Prevent form submission
+      }
+
+      var input = document.getElementById('password').value;
+      if (input === '') {
+          alert('The password field cannot be empty.');
+          event.preventDefault();
+      }
+      else if (input.length < 8) {
+        alert("Password must be at least 8 characters long!");
+        event.preventDefault();
+      }
+
+      if (isPasswordInvalid(input)) {
+        alert("Please include lower/uppercase characters, numbers and special characters in your password.")
+        event.preventDefault();
+      }
+      });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,426 @@
+    /* Importing Google Fonts and Boxicons */
+    @import "https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap";
+
+    @import "https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css";
+    
+    :root {
+      --phone-view-start: 992px
+    }
+    /* Global style settings */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif; /* Applying 'Poppins' font globally */
+    }
+    
+    /* Sidebar container styling */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 78px; /* Default sidebar width */
+      background: #11101D; /* Dark background color for sidebar */
+      padding: 6px 14px;
+      z-index: 99; /* Ensures sidebar is on top */
+      transition: all 0.5s ease; /* Smooth transition for width change */
+    }
+    
+    /* Logo details within the sidebar */
+    .sidebar .logo-details {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .sidebar .logo-details .icon {
+      opacity: 0; /* Hidden by default, shows when sidebar is expanded */
+      transition: all 0.5s ease;
+    }
+    .sidebar .logo-details .logo_name {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
+      opacity: 0; /* Hidden by default, shows when sidebar is expanded */
+      transition: all 0.5s ease;
+      /*pointer-events: none;*/
+    }
+    .sidebar .logo-details #btn {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      font-size: 23px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      
+    }
+    
+    /* General icon styling */
+    .sidebar i {
+      color: #fff;
+      height: 60px;
+      min-width: 50px;
+      font-size: 28px;
+      text-align: center;
+      line-height: 60px; /* Centers icon vertically */
+    }
+    
+    /* Sidebar navigation list styling */
+    .sidebar .nav-list {
+      height: calc(100% - 140px); /* Leaves space for logo and profile */
+    }
+    
+    /* Scrollbar styles for sidebar */
+    .sidebar .scroll {
+      overflow-y: auto; /* Enables vertical scrolling */
+      overflow-x: hidden;
+      scrollbar-width: thin;
+    }
+    .sidebar .scroll::-webkit-scrollbar {
+      width: 8px;
+      background: #262440; /* Scrollbar background color */
+      border-radius: 5px;
+    }
+    .sidebar .scroll::-webkit-scrollbar-thumb {
+      background: #262440; /* Scrollbar thumb color */
+      border-radius: 5px;
+    }
+    .sidebar .scroll::-webkit-scrollbar-track {
+      background: #171526; /* Scrollbar track color */
+      border-radius: 5px;
+    }
+    
+    /* Sidebar navigation item styling */
+    .sidebar li {
+      position: relative;
+      margin: 8px 8px 8px 0;
+      list-style: none;
+    }
+    .sidebar li .tooltip {
+      position: absolute;
+      top: -20px;
+      left: calc(100% + 15px);
+      z-index: 3;
+      background: #fff;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 400;
+      opacity: 0; /* Hidden by default */
+      pointer-events: none;
+      transition: 0s;
+    }
+    .sidebar li:hover .tooltip {
+      opacity: 1; /* Shows tooltip on hover */
+      pointer-events: auto;
+      transition: all 0.4s ease;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    /* Link styling within sidebar items */
+    .sidebar li a {
+      display: flex;
+      /*height: 100%;*/
+      width: 120%; /*100%*/
+      border-radius: 12px;
+      align-items: center;
+      text-decoration: none;
+      transition: all 0.4s ease;
+      background: #11101D; /* Default background for links */
+    }
+    .sidebar li a:hover {
+      background: #1d1b31; /* Lighter background on hover */
+    }
+    
+    /* Link text and icon hover effects */
+    .sidebar li a:hover .links_name {
+      transition: all 0.5s ease;
+    }
+    .sidebar li a:hover i {
+      transition: all 0.5s ease;
+    }
+    
+    /* Link text styling */
+    .sidebar li a .links_name {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 400;
+      white-space: nowrap;
+      opacity: 0; /* Hidden by default */
+      pointer-events: none;
+      transition: 0.4s;
+    }
+    
+    /* Icon styling within sidebar items */
+    .sidebar li i {
+      height: 50px;
+      line-height: 50px; /* Centers icon vertically */
+      font-size: 18px;
+      border-radius: 12px;
+    }
+    
+    /* Profile details styling */
+    .sidebar li .profile-details {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    .sidebar li img {
+      height: 45px;
+      width: 45px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-right: 10px;
+    }
+    
+    /* Sidebar input (search) styling */
+    .sidebar input {
+      font-size: 15px;
+      color: #FFF;
+      font-weight: 400;
+      outline: none;
+      height: 50px;
+      width: 50px; /* Default width for search input */
+      border: none;
+      border-radius: 12px;
+      transition: all 0.5s ease;
+      background: #1d1b31; /* Input background color */
+    }
+    
+    /* Search button styling */
+    .sidebar .bx-search {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      font-size: 22px;
+      background: #1d1b31;
+      color: #FFF;
+    }
+    .sidebar .bx-search:hover {
+      background: #FFF; /* Hover background color */
+      color: #11101d; /* Hover text color */
+    }
+    
+    /* Profile section styling */
+    .sidebar li.profile {
+      position: fixed;
+      height: 60px;
+      width: 78px; /* Default width for profile section */
+      left: 0;
+      bottom: -8px;
+      padding: 10px 14px;
+      background: #1d1b31;
+      transition: all 0.5s ease;
+      overflow: hidden;
+    }
+    .sidebar li.profile .name {
+      font-size: 15px;
+      font-weight: 400;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .sidebar li.profile .job {
+      font-size: 12px;
+      font-weight: 400;
+      color: #fff;
+      white-space: nowrap;
+    }
+    
+    /* Logout button styling */
+    .sidebar .profile #log_out, .sidebar .profile #upgrade, .sidebar .profile #settings {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      background: #1d1b31;
+      width: 100%;
+      height: 60px;
+      line-height: 60px; /* Centers logout icon vertically */
+      border-radius: 0px;
+      transition: all 0.5s ease;
+    }
+
+    .sidebar .upgrade #upgrade_section {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      background: #1d1b31;
+      width: 100%;
+      height: 60px;
+      line-height: 60px; /* Centers logout icon vertically */
+      border-radius: 0px;
+      transition: all 0.5s ease;
+    }
+    
+    /* Expanded sidebar styles */
+    .sidebar.open {
+      width: 250px; /* Expanded sidebar width */
+    }
+    .sidebar.open .logo-details .icon {
+      opacity: 1; /* Shows icon in expanded state */
+    }
+    .sidebar.open .logo-details .logo_name {
+      opacity: 1; /* Shows logo name in expanded state */
+      pointer-events: all;
+    }
+    .sidebar.open .logo-details #btn {
+      text-align: right;
+    }
+    .sidebar.open li .tooltip {
+      display: none; /* Hides tooltips when expanded */
+    }
+    .sidebar.open li a .links_name {
+      opacity: 1; /* Shows link names when expanded */
+      pointer-events: auto;
+    }
+    .sidebar.open input {
+      padding: 0 20px 0 50px;
+      width: 100%; /* Expands input width */
+    }
+    .sidebar.open .bx-search:hover {
+      background: #1d1b31;
+      color: #FFF;
+    }
+    .sidebar.open li.profile {
+      width: 250px; /* Expands profile section */
+    }
+    .sidebar.open .profile #log_out, .sidebar.open .profile #upgrade, .sidebar.open .profile #settings {
+      width: 50px; /* Shrinks logout button */
+      background: none;
+    }
+
+    @media (min-width: 992px) {
+      .sidebar.open ~ .home-section, .sidebar.open ~ .sidebar-app {
+        left: 250px; /* Adjusts home section to sidebar width */
+        width: calc(100% - 250px);
+      }
+    }
+    
+    
+    /* Main content (home section) styling */
+    .home-section, .sidebar-app {
+      position: relative;
+      background: #E4E9F7; /* Light background for main content */
+      min-height: 100vh;
+      top: 0;
+      left: 78px;
+      width: calc(100% - 78px); /* Adjusts width to fit next to sidebar */
+      transition: all 0.5s ease;
+      z-index: 2;
+    }
+    .home-section, .sidebar-app {
+        background-color: #161313 !important
+    }
+    /* Hover effect for ImageGen */
+    .imagegen, li:hover .imagegen, .imagegen:hover {
+      color: rgb(170, 0, 255) !important;
+    }
+    
+    /* Hover effect for Image To Text */
+    .tti, li:hover .tti, .tti:hover {
+      color: rgb(0, 255, 0) !important;
+    }
+    
+    /* Hover effect for 3D Gen */
+    .gen3d, li:hover .gen3d, .gen3d:hover {
+      color: rgb(255, 247, 0) !important;
+    }
+    
+    /* Hover effect for Enhance */
+    .enhance, li:hover .enhance, .enhance:hover {
+      color: rgb(0, 255, 251) !important;
+    }
+    
+    /* Hover effect for Background Editor */
+    .bgedit , li:hover .bgedit, .bgedit:hover {
+      color: rgb(39, 136, 255) !important;
+    }
+    
+    /* Hover effect for Frame Extractor */
+    .frame_extractor, li:hover .frame_extractor, .frame_extractor:hover {
+      color: rgb(255, 81, 0) !important;
+    }
+
+    .explore, li:hover .explore, .explore:hover {
+      color: rgb(255, 125, 125) !important;
+    }
+
+    .upgrade_plan, li:hover .upgrade_plan, .upgrade_plan:hover {
+      color: rgb(255, 196, 0) !important;
+    }
+    
+    
+    /* Hover effect for Settings */
+    .settings, li:hover .settings, .settings:hover {
+      color: rgb(170, 0, 255) !important;
+    }
+
+    /*.settings {
+      transition: transform 0.3s ease;
+    }
+
+    .settings:hover {
+      transform: rotate(360deg);
+    } */
+    
+    .links_name {
+      color: white !important
+    }
+
+    .custom-icon {
+      font-size: 10px;                          /* Set icon size */
+      background: linear-gradient(to top, yellow 45%, grey 30%);
+      -webkit-background-clip: text;
+      --background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      display: inline-block;
+    }
+    
+    @media (max-width: 992px) {
+      .home-section {
+        width: 100%; left: 0; /* padding-top: 10%*/
+      }
+
+      #modename, #credits_on_page {
+        display: none
+      }
+
+      .profile, .nav-list {
+        display: none
+      }
+
+      .sidebar {
+        width: 100%; height: auto
+      }
+
+      .sidebar.open .profile, .sidebar.open .nav-list {
+        display: block
+      }
+
+      .sidebar.open {
+        width: 100%; height: 100%; text-align: center
+      }
+
+      .sidebar .logo-details .logo_name {
+        opacity: 1
+      }
+
+      .name_job, .profile, .sidebar.open li.profile {
+        width: 100%; text-align: left
+      }
+    }
+    .header-bar {
+    right: 0 !important;
+    left: inherit;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+    }

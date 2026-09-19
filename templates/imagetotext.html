@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Image To Text - ImageGen</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Scan and digitize your images to edit them from word to word in your browser, whether they are handwritten notes, official documents, or any images containing texts!">
+    <meta name="keywords" content="ocr, ocr tool, image to text, image scan for text, handwriting ocr">
+    <meta name="author" content="ImageGen">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="ImageGen">
+    <meta property="og:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+    <meta property="og:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+    <meta property="og:url" content="{{HOST}}">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ImageGen">
+    <meta name="twitter:description" content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more...">
+    <meta name="twitter:image" content="{{HOST}}/static/img/preview-template/preview-template.png">
+
+    <meta name="theme-color" content="#161313">
+    <link rel="canonical" href="{{HOST}}">
+    <meta name="language" content="English">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+
+    <link rel="icon" href="{{HOST}}/static/img/logo/icon.svg" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{HOST}}/static/img/logo/icon.svg">
+    <link rel="stylesheet" href="/static/all-icons/myicon.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/ocr.css">
+
+    <!-- ADDED: "Show Demo" button + modal viewer for the demo screenshot (static/demo/imagetotext.png). -->
+    <style>
+        .demo-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 14px 0 4px 0;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .demo-btn:hover {
+            background: rgba(255, 255, 255, 0.16);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .demo-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .demo-modal-overlay.open {
+            display: flex;
+        }
+
+        .demo-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .demo-modal-content img {
+            display: block;
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            margin: 0 auto;
+        }
+
+        .demo-modal-close {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fff;
+            color: #111;
+            border: none;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <main>
+            {% include "en/sidebar_header.html" %}
+            <section class="banner v2 pb-50 pb-lg-70 pb-xl-100 pb-xxl-120 home-section" style="margin-top: 2%">
+                <div class="container">
+                    <div class="main-banner-content">
+                        <div class="section-title-center">
+                            <h2 class="text-5 text-bold">Image To Text</h2>
+
+                            <!-- ADDED: opens a modal showing the demo screenshot. -->
+                            <button type="button" class="demo-btn" id="showDemoBtn">&#9654; Show Demo</button>
+
+                            <p style="margin-bottom: 4%" class="text-para-1 mt-20">Digitize your handwritten, or printed text</p>
+                            <p class="text-para-1 mt-10">Maximum 5 images are allowed. Only JPG, JPEG, and PNG formats are accepted. It will use 1 tool use per page scanned.</p>
+                            <p class="text-para-1 mt-10 mb-2">You can modify the words as you like on the image, then you can copy all the text as you scroll down. Works best with english language.</p>
+                            <p class="text-para-1 mt-10 text-bold">Make sure the images are oriented correctly, rotate them manually if needed.</p>
+                            </div>
+
+                        <!-- ADDED: modal viewer for the demo screenshot, opened by the "Show Demo" button above. -->
+                        <div class="demo-modal-overlay" id="demoModalOverlay">
+                            <div class="demo-modal-content">
+                                <button type="button" class="demo-modal-close" id="demoModalClose" aria-label="Close">&times;</button>
+                                <img src="/static/demo/imagetotext.png" alt="Example of text extracted from an image with Image To Text">
+                            </div>
+                        </div>
+
+                        <script>
+                            (function () {
+                                var btn = document.getElementById('showDemoBtn');
+                                var overlay = document.getElementById('demoModalOverlay');
+                                var closeBtn = document.getElementById('demoModalClose');
+
+                                function openDemo() {
+                                    overlay.classList.add('open');
+                                    document.body.style.overflow = 'hidden';
+                                }
+
+                                function closeDemo() {
+                                    overlay.classList.remove('open');
+                                    document.body.style.overflow = '';
+                                }
+
+                                if (btn && overlay && closeBtn) {
+                                    btn.addEventListener('click', openDemo);
+                                    closeBtn.addEventListener('click', closeDemo);
+                                    overlay.addEventListener('click', function (e) {
+                                        if (e.target === overlay) closeDemo();
+                                    });
+                                    document.addEventListener('keydown', function (e) {
+                                        if (e.key === 'Escape' && overlay.classList.contains('open')) closeDemo();
+                                    });
+                                }
+                            })();
+                        </script>
+
+                        <script>
+                            const url = new URL(window.location.href);
+                            const params = new URLSearchParams(url.search);
+                            const name = params.get('mode');
+                            var mode = "Default"
+
+                            if (name === 'handwriting') {
+                                mode = "Handwriting"
+                            }
+
+                        </script>
+
+                        <div id="mt10"></div>
+
+                        <div>
+                            <label for="imageInput" class="btn-upload">Upload Images <i class="fa fa-upload"></i></label>
+                            <input type="file" id="imageInput" accept=".jpg, .jpeg, .png" multiple onchange="handleFileUpload()" />
+                        </div>
+
+                        <div class="preview-container" id="previewContainer"></div>
+
+                        <button style="margin-bottom: 0%;" class="btn-anime v4 text-capital round-border-full" id="letrehozas" name="letrehozas" onclick="generateImages()">Start scanning</button>
+                        <p id="fileCount" style="margin-top: 4px; color: white"></p>
+                    </div>
+
+                    <div class="banner-cards glass-bg mt-50 mt-md-70 mt-xl-100 mt-xxl-120">
+                        <div id="kepek-szoveg" style="text-align: center; margin-bottom: 5%">
+                            <h1 class="text-6 text-bold">Processed Images</h1>
+                        </div>
+
+                        <div id="image-container" class="image-container">
+                        </div>
+                    </div>
+
+                    <div class="banner-cards glass-bg mt-50 mt-md-70 mt-xl-100 mt-xxl-120">
+                        <!-- FIX: duplikalt id="kepek-szoveg" eltavolitva (nem hasznalja se CSS se JS id szerint) -->
+                        <div style="text-align: center; margin-bottom: 5%">
+                            <div class="textarea-wrapper">
+
+                            <h1 class="text-2 text-bold">Image 1 Text</h1>
+                                <textarea style="margin-top: 2%"></textarea>
+                                </div>
+
+                            <h1 class="text-2 text-bold">Image 2 Text</h1>
+                            <textarea style="margin-bottom: 4%; margin-top: 2%"></textarea>
+                            <h1 class="text-2 text-bold">Image 3 Text</h1>
+                            <textarea style="margin-bottom: 4%; margin-top: 2%"></textarea>
+                            <h1 class="text-2 text-bold">Image 4 Text</h1>
+                            <textarea style="margin-bottom: 4%; margin-top: 2%"></textarea>
+                            <h1 class="text-2 text-bold">Image 5 Text</h1>
+                            <textarea style="margin-bottom: 4%; margin-top: 2%"></textarea>
+                        </div>
+
+                        <!-- FIX: duplikalt id="image-container" eltavolitva (a JS csak a fenti .image-container-t hasznalja) -->
+                        <div class="row mt-space xl-space-not-none justify-content-md-center">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        {% include "en/app_footer.html" %}
+    </div>
+
+    <div class="modal fade" id="customUpgradeModal" tabindex="-1" aria-labelledby="modalLabel" style="background-color: rgb(2,2,2,0.7)" aria-hidden="false">
+        <div class="modal-dialog modal-dialog-centered" style="margin-top: -20vh">
+          <div class="modal-content bg-dark text-white">
+            <div class="modal-header" style="border-bottom: none">
+              <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body text-center" id="modalUpgradeText">
+            </div>
+            <div class="modal-footer" style="border-bottom: none; border-top: none">
+                <a href="/upgrade" style="background-color: rgb(255, 170, 42); border: 1px solid rgb(255, 170, 42);" class="btn btn-primary">Upgrade Plan</a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function showUpgradeModal(text) {
+                document.getElementById('modalUpgradeText').innerText = text;
+
+                var myModal = new bootstrap.Modal(document.getElementById('customUpgradeModal'));
+                myModal.show();
+            }
+
+        var kreditek = {{credits}};
+        var csrf_token = "{{ session.get('csrf_token') }}";
+
+        function generateImages() {
+
+            $("#letrehozas, #letrehozas2").attr('disabled', true);
+            const input = document.getElementById('imageInput');
+            const files = input.files;
+
+            if (files.length === 0) {
+                alert('Please select at least one image to upload.');
+                if ($("#letrehozas").is(':disabled')) {
+                    $("#letrehozas").removeAttr('disabled');
+                }
+                return;
+            }
+
+            const formData = new FormData();
+            for (let i = 0; i < Math.min(files.length, 5); i++) {
+                formData.append('images', files[i]);
+            }
+
+            $.ajax({
+                url: '/upload',
+                type: 'POST',
+                headers: {"X-CSRF-Token": csrf_token},
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log(response);
+                    if (response.error) {
+                        alert(response.error);
+                        if ($("#letrehozas").is(':disabled')) {
+                            $("#letrehozas").removeAttr('disabled');
+                        }
+                        return;
+                    }
+                    else if (response.out_of_credits) {
+                        window.location.href = "/upgrade";
+                        return;
+                    } else if (response.more_than_limit) {
+                        alert("You sent more than 5 files to the server.");
+                        if ($("#letrehozas").is(':disabled')) {
+                            $("#letrehozas").removeAttr('disabled');
+                        }
+                        return;
+                    }
+
+
+                    else {
+                        kreditek = kreditek - Math.min(files.length, 5);
+                        updateProgress(kreditek)
+
+                        $('#image-container').empty();
+                        originalBoxes.length = 0;
+                        $('textarea').val('');
+
+                        response.forEach((result, index) => {
+                            const processedWrapper = $('<div>').addClass('processed-image-wrapper');
+
+                            const imgElement = $('<img>')
+                                .attr('src', URL.createObjectURL(files[index]))
+                                .addClass('ocr-image')
+                                .css('display', 'block');
+
+                            processedWrapper.append(imgElement);
+                            originalBoxes[index] = [];
+
+                            if (Array.isArray(result.boxes) && result.boxes.length > 0) {
+                                result.boxes.forEach((box) => {
+                                    if (box.character !== ',' && box.character !== '.') {
+                                        const boxElement = $('<div>')
+                                            .addClass('box')
+                                            .css({ left: box.x + 'px', top: box.y + 'px' })
+                                            .text(box.character)
+                                            .attr('contenteditable', true)
+                                            .on('input', function () { updateTextareaForImage(index); })
+                                            .click(function () { bringToFront(this); });
+
+                                        originalBoxes[index].push({ x: box.x, y: box.y });
+                                        processedWrapper.append(boxElement);
+                                    }
+                                });
+                            }
+
+                            $('#image-container').append(processedWrapper);
+
+                            imgElement.on('load', function () {
+                                originalWidth = this.naturalWidth;
+                                originalHeight = this.naturalHeight;
+                                adjustBoxes(imgElement, index);
+                                updateTextareaForImage(index);
+                            });
+
+                            if (result.full_text) { // FIX: 'response' a tomb volt (nincs .full_text), 'result' a forEach aktualis eleme - ez a helyes
+                                logDivsByRow();
+                            }
+                        });
+                    }
+                    if ($("#letrehozas").is(':disabled')) {
+                        $("#letrehozas").removeAttr('disabled');
+                    }
+                },
+                error: function () {
+                    alert("Unexpected error happened. Please try again later. If you would like to report the issue, please navigate to 'Contact' page and leave us a message!");
+                    if ($("#letrehozas").is(':disabled')) {
+                        $("#letrehozas").removeAttr('disabled');
+                    }
+                }
+            });
+        }
+
+
+        $(window).resize(function () {
+            $('.ocr-image').each(function (index) {
+                adjustBoxes($(this), index);
+            });
+        });
+
+
+    </script>
+
+    <script src="/static/js/ocr.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/plugins.js"></script>
+    <script src="/static/js/index.js"></script>
+
+</body>
+
+
+</html>

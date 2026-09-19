@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login - ImageGen</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Login to your ImageGen account to access image generation, enhancement, 3d model generation and text to image."
+    />
+    <meta
+      name="keywords"
+      content="ai image, image background remove free, upscale photo, 3d model generator"
+    />
+    <meta name="author" content="ImageGen" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:title" content="ImageGen" />
+    <meta
+      property="og:description"
+      content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more..."
+    />
+    <meta
+      property="og:image"
+      content="{{HOST}}/static/img/preview-template/preview-template.png"
+    />
+    <meta property="og:url" content="{{HOST}}" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ImageGen" />
+    <meta
+      name="twitter:description"
+      content="Embrace your creativity by generating images, enhancing old photos, removing backgrounds from images and many more..."
+    />
+    <meta
+      name="twitter:image"
+      content="{{HOST}}/static/img/preview-template/preview-template.png"
+    />
+
+    <meta name="theme-color" content="#161313" />
+    <link rel="canonical" href="{{HOST}}" />
+    <meta name="language" content="English" />
+    <meta name="coverage" content="Worldwide" />
+    <meta name="rating" content="General" />
+
+    <link
+      rel="icon"
+      href="{{HOST}}/static/img/logo/icon.svg"
+      type="image/x-icon"
+    />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/login.css" />
+
+    <style>
+      * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      @media (max-width: 992px) {
+        #nokey {
+          display: none;
+        }
+      }
+    </style>
+
+    <canvas id="nokey" width="1000" height="1000" style="opacity: 40%">
+    </canvas>
+  </head>
+  <body class="bg-dark text-light">
+    <div class="centered-box">
+      <div class="modal-body">
+        <a href="/">
+          <div class="mb-3">
+            <img
+              loading="eager"
+              src="/static/img/logo/ImageGen.svg"
+              alt="Logo"
+            />
+          </div>
+        </a>
+
+        <h2 class="mb-3">Login</h2>
+
+        {% with messages = get_flashed_messages() %} {% if messages[0] ==
+        "after_pwreset" %}
+        <p style="margin-bottom: 0%">
+          Password reset was succcessful. You can now login with your new
+          password.
+        </p>
+        {% elif messages[0] == "deleted" %}
+        <p style="margin-bottom: 0%">
+          Account deletion was successful. Thank you for checking in! See you
+          soon!
+        </p>
+        {% elif messages[0] == "deleted_error" %}
+        <p style="margin-bottom: 0%">
+          There was a problem deleting your account
+        </p>
+        {% elif messages[0] == "successfully_activated" %}
+        <p style="margin-bottom: 0%">
+          E-mail successfully verificated. You can now login to your account.
+        </p>
+        {% else %}
+        <p style="margin-bottom: 0%">Please Log In To Continue.</p>
+        {% endif %} {% endwith %}
+
+        <a
+          href="/continue-w-google"
+          class="social-login-button nonselectable"
+          style="text-decoration: none"
+        >
+          <img
+            src="https://img.icons8.com/color/48/000000/google-logo.png"
+            alt="Google"
+          />
+          <span>Continue with Google</span>
+        </a>
+
+        <!-- Divider -->
+        <div class="divider">OR</div>
+
+        <form method="post" id="loginform">
+          <div class="mb-3 text-start">
+            <input
+              type="hidden"
+              name="csrf_token"
+              value="{{ session.get('csrf_token') }}"
+            />
+            <label for="email" class="input-label">Your email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <div class="mb-3 text-start">
+            <label
+              for="password"
+              class="input-label d-flex justify-content-between align-items-center"
+            >
+              <span>Your password</span>
+              <button
+                type="button"
+                class="password-toggle"
+                onclick="togglePasswordVisibility()"
+              >
+                <i id="eyeIcon" class="fa fa-eye"></i>
+                <span id="toggleText">Show</span>
+              </button>
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              required
+            />
+
+            {% with messages = get_flashed_messages() %} {% if messages and
+            messages[0] not in ["after_pwreset", "deleted", "deleted_error",
+            "successfully_activated"] %}
+            <p class="wrong-credentials" style="color: red">
+              <i class="fa-solid fa-circle-exclamation"></i> {{ messages[0]|safe
+              }}
+            </p>
+            {% endif %} {% endwith %}
+          </div>
+
+          <a href="forgot-password" class="forgot-password text-info"
+            >Forgot your password?</a
+          >
+          <br /><br />
+          <a
+            href="continue-as-guest?csrf_token={{session.get('csrf_token')}}"
+            class="text-info"
+            >Continue as Guest</a
+          >
+          <button
+            type="submit"
+            name="login_send"
+            class="btn login-button w-100 mt-3"
+          >
+            Log in
+          </button>
+        </form>
+        <div class="divider"></div>
+        <p class="mb-3">
+          Don't have an account yet?
+          <a
+            href="signup{% if request.args.get('redirect') %}?redirect={{ request.args.get('redirect') }}{% endif %}"
+            class="text-info"
+            >Sign up there.</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <script src="/static/js/login_background_balls.js"></script>
+
+    <script>
+      function togglePasswordVisibility() {
+        const passwordField = document.getElementById("password");
+        const toggleText = document.getElementById("toggleText");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        if (passwordField.type === "password") {
+          passwordField.type = "text";
+          toggleText.innerText = "Hide";
+          eyeIcon.classList.remove("fa-eye");
+          eyeIcon.classList.add("fa-eye-slash");
+        } else {
+          passwordField.type = "password";
+          toggleText.innerText = "Show";
+          eyeIcon.classList.remove("fa-eye-slash");
+          eyeIcon.classList.add("fa-eye");
+        }
+      }
+
+      document
+        .getElementById("loginform")
+        .addEventListener("submit", function (event) {
+          var email_value = document.getElementById("email").value;
+
+          if (email_value.length < 3) {
+            alert("Incorrect e-mail address!");
+            event.preventDefault();
+          }
+
+          var input = document.getElementById("password").value;
+          if (input === "") {
+            alert("The password field cannot be empty.");
+            event.preventDefault();
+          } else if (input.length < 8) {
+            alert("Incorrect password!");
+            event.preventDefault();
+          }
+        });
+    </script>
+  </body>
+</html>

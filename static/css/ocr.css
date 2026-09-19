@@ -1,0 +1,136 @@
+#letrehozas:disabled {
+    background-color: grey;
+}
+
+@media (min-width: 1019px) {
+    /*.banner {
+        padding-top: 180px
+    }*/
+
+    #mt10 {
+        margin-top: 4%
+    }
+
+    #letrehozas {
+        margin-top: 2%
+    }
+
+    textarea {
+        min-height: 200px
+    }
+}
+
+@media (max-width: 1019px) {
+    #mt10 {
+        margin-top: 10%
+    }
+
+    #letrehozas {
+        margin-top: 9%
+    }
+
+    textarea {
+        min-height: 300px
+    }
+}
+
+.preview-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.preview-container img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+}
+
+/* Hide the file input */
+#imageInput {
+    display: none;
+}
+
+/* Style for the custom upload button */
+.btn-upload {
+    display: inline-block;
+    cursor: pointer;
+    background-color: #7e8bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: none;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-upload:hover {
+    background-color: #563d7c;
+}
+
+.btn-upload i {
+    margin-left: 10px;
+}
+
+/* OCR-specific styles */
+.image-container {
+    position: relative;
+    margin-top: 20px;
+    max-width: 100%;
+    text-align: center;
+}
+
+.ocr-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.box {
+    position: absolute;
+    padding: 2px 4px;
+    background-color: white;
+    border: 1px solid black;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    color: black;
+    text-align: center;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+
+.processed-image-wrapper {
+    margin-top: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.processed-image-wrapper {
+    margin: 10px;
+    text-align: center;
+    position: relative;
+}
+
+.viewbutton:hover {
+    background-color: transparent;
+    color: white;
+    user-select: none;
+}
+/*
+@media (max-width: 1060px) {
+.icon-btn i {
+font-size: 3em; /* This is equivalent to fa-3x 
+}
+} */
